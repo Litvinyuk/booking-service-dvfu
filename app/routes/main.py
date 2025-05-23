@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from app.models. import init_db
+from app.models.databese import init_db
 
 main_bp = Blueprint('main', __name__)
 

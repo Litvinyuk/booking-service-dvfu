@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <title>{% block title %}Сервис бронирования ДВФУ{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
 </head>
 <body>
     <header>
-        <h1><a href="/">Сервис бронирования пространств ДВФУ</a></h1>
+        <div class="header-container">
+            <a href="https://dvfu.ru" target="_blank">
+                <img src="{{ url_for('static', filename='images/dvfu_logo.png') }}" alt="ДВФУ" class="logo">
+            </a>
+            <h1><a href="/">Сервис бронирования пространств</a></h1>
+        </div>
     </header>
 
     <main>
@@ -16,7 +20,26 @@
     </main>
 
     <footer>
-        <p>&copy; ДВФУ, 2025</p>
+        <p>&copy; 2025 ДВФУ</p>
+        <p><a href="https://dvfu.ru" target="_blank">Официальный сайт ДВФУ</a> | Контакты: mail@dvfu.ru</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slides = document.querySelector('.slides');
+            const images = document.querySelectorAll('.slides img');
+            const prev = document.querySelector('.prev');
+            const next = document.querySelector('.next');
+            let index = 0;
+
+            function showSlide(i) {
+                index = (i + images.length) % images.length;
+                slides.style.transform = `translateX(-${index * 100}%)`;
+            }
+
+            prev.addEventListener('click', () => showSlide(index - 1));
+            next.addEventListener('click', () => showSlide(index + 1));
+        });
+    </script>
 </body>
 </html>

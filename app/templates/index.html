@@ -3,6 +3,46 @@
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-    <h2>Добро пожаловать!</h2>
-    <p>Вы можете забронировать пространства университета онлайн.</p>
+
+<!-- Слайдер -->
+<section class="slider-section">
+    <div class="slider">
+        <button class="slider-btn prev">&#10094;</button>
+        <div class="slides">
+            <img src="{{ url_for('static', filename='images/slide1.jpg') }}" alt="Фото 1">
+            <img src="{{ url_for('static', filename='images/slide2.jpg') }}" alt="Фото 2">
+            <img src="{{ url_for('static', filename='images/slide3.jpg') }}" alt="Фото 3">
+        </div>
+        <button class="slider-btn next">&#10095;</button>
+    </div>
+</section>
+
+<!-- Блок с описанием -->
+<section class="info-section">
+    <h2>О сервисе</h2>
+    <p>Информация о бронированиях, правилах, условиях и т.д.</p>
+</section>
+
+<!-- Часто задаваемые вопросы -->
+<section class="faq-section">
+    <h2>Часто задаваемые вопросы</h2>
+    <details>
+        <summary>Как забронировать пространство?</summary>
+        <p>Выберите пространство в каталоге и подтвердите.</p>
+    </details>
+    <details>
+        <summary>Можно ли отменить бронь?</summary>
+        <p>Да, через личный кабинет.</p>
+    </details>
+    <details>
+        <summary>Сколько можно бронировать?</summary>
+        <p>До 2 активных заявок одновременно.</p>
+    </details>
+</section>
+
+<!-- Кнопка перехода в каталог -->
+<section class="catalog-link">
+    <a href="/catalog" class="btn">Перейти в каталог</a>
+</section>
+
 {% endblock %}

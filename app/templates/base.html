@@ -11,14 +11,17 @@
             <a href="https://dvfu.ru" target="_blank">
                 <img src="{{ url_for('static', filename='images/dvfu_logo.png') }}" alt="ДВФУ" class="logo">
             </a>
-            <h1><a href="/">Сервис бронирования пространств</a></h1>
+            <h1><a href="{{ url_for('main.index') }}">Сервис бронирования пространств</a></h1>
+            <div class="auth-container">
+                <a href="{{ url_for('main.register') }}" class="auth-link">Регистрация</a>
+                <a href="{{ url_for('main.login') }}" class="auth-link">Вход</a>
+            </div>
         </div>
     </header>
 
     <main>
         {% block content %}{% endblock %}
     </main>
-
     <footer>
         <p>&copy; 2025 ДВФУ</p>
         <p><a href="https://dvfu.ru" target="_blank">Официальный сайт ДВФУ</a> | Контакты: mail@dvfu.ru</p>

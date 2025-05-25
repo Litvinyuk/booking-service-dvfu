@@ -7,6 +7,7 @@
     padding: 1rem;
     background: #004080;
     color: white;
+    position: relative; /* Добавляем для позиционирования кнопки входа */
 }
 
 .logo {
@@ -16,6 +17,28 @@
 .header-container h1 a {
     color: white;
     text-decoration: none;
+}
+
+/* Кнопка входа/регистрации */
+.auth-container {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.auth-link {
+    color: white;
+    background: #0066cc;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+.auth-link:hover {
+    background: #0052a3;
 }
 
 /* Слайдер */
@@ -73,7 +96,6 @@
     right: 10px;
 }
 
-
 /* Остальные блоки */
 .info-section, .faq-section, .catalog-link {
     padding: 2rem;
@@ -87,4 +109,54 @@
     border-radius: 5px;
     text-decoration: none;
     font-size: 1.1rem;
+}
+
+/* Стили для форм аутентификации */
+.auth-form {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.auth-form h2 {
+    text-align: center;
+    color: #004080;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.btn {
+    background: #004080;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn:hover {
+    background: #003366;
 }

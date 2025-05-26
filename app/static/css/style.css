@@ -1,21 +1,52 @@
 /* Шапка */
 .header-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem;
+    justify-content: space-between;
+    padding: 1rem 2rem;
     background: #004080;
     color: white;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .logo {
     height: 40px;
 }
 
-.header-container h1 a {
+.header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.header-title a {
     color: white;
     text-decoration: none;
+}
+
+.user-icon {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding-right: 4rem;
+}
+
+.user-icon img {
+    height: 32px;
+    filter: brightness(0) invert(1);
+    cursor: pointer;
+}
+
+
+
+.page-content {
+    padding-top: 100px;
 }
 
 /* Слайдер */

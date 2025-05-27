@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from app.models.database import get_connection
+#from app.models.database import get_connection
 
 main_bp = Blueprint('main', __name__)
 
@@ -7,7 +7,13 @@ main_bp = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
+
 @main_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    # Логика регистрации
+    return render_template('register.html')
+
+"""@main_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         email = request.form['email']
@@ -32,7 +38,7 @@ def register():
         finally:
             conn.close()
 
-    return render_template('register.html')
+    return render_template('register.html')"""
 
 @main_bp.route('/register-success')
 def register_success():

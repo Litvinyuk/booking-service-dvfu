@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+
     <header class="header-container">
         <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
         <div class="header-title">
@@ -13,13 +14,13 @@
         </div>
         <div class="user-icon">
             <a href="#"><img src="{{ url_for('static', filename='images/user-icon.svg') }}" alt="Профиль"></a>
+
         </div>
     </header>
 
     <main class="page-content">
         {% block content %}{% endblock %}
     </main>
-
     <footer>
         <p>&copy; 2025 ДВФУ</p>
         <p><a href="https://dvfu.ru" target="_blank">Официальный сайт ДВФУ</a> | Контакты: mail@dvfu.ru</p>

@@ -6,20 +6,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <a href="https://dvfu.ru" target="_blank">
-                <img src="{{ url_for('static', filename='images/dvfu_logo.png') }}" alt="ДВФУ" class="logo">
-            </a>
-            <h1><a href="{{ url_for('main.index') }}">Сервис бронирования пространств</a></h1>
-            <div class="auth-container">
-                <a href="{{ url_for('main.register') }}" class="auth-link">Регистрация</a>
-                <a href="{{ url_for('main.login') }}" class="auth-link">Вход</a>
-            </div>
+
+    <header class="header-container">
+        <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
+        <div class="header-title">
+            <a href="/">Сервис бронирования пространств</a>
+        </div>
+        <div class="user-icon">
+            <a href="#"><img src="{{ url_for('static', filename='images/user-icon.svg') }}" alt="Профиль"></a>
+
         </div>
     </header>
 
-    <main>
+    <main class="page-content">
         {% block content %}{% endblock %}
     </main>
     <footer>

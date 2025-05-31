@@ -20,7 +20,7 @@ def register():
         first_name = request.form['firstname']     # соответствие полям формы
         last_name = request.form['surname']
         password = request.form['password']
-        user_role = 'student'  # По умолчанию. Или добавь выбор в форме.
+        user_role = request.form['user_role']
 
         conn = get_connection()
         cursor = conn.cursor()

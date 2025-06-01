@@ -1,19 +1,31 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from werkzeug.security import generate_password_hash, check_password_hash
+import sqlite3
 from app.models.database import get_connection
 
 main_bp = Blueprint('main', __name__)
+
+def login_required(f):
+    def wrapper(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Пожалуйста, войдите в систему', 'error')
+            return redirect(url_for('main.login'))
+        return f(*args, **kwargs)
+    wrapper.__name__ = f.__name__
+    return wrapper
 
 @main_bp.route('/')
 def index():
     return render_template('index.html')
 
+
 @main_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         email = request.form['email']
-        first_name = request.form['firstname']     # соответствие полям формы
+        first_name = request.form['firstname']
         last_name = request.form['surname']
-        password = request.form['password']
+        password = generate_password_hash(request.form['password'])  # Хешируем!
         user_role = request.form['user_role']
 
         conn = get_connection()
@@ -25,10 +37,10 @@ def register():
                 VALUES (?, ?, ?, ?, ?)
             ''', (email, first_name, last_name, password, user_role))
             conn.commit()
-            return redirect(url_for('main.login'))  # редирект после успешной регистрации
-        except Exception as e:
-            conn.rollback()
-            return f"<h3>Ошибка при регистрации: {str(e)}</h3>"
+            flash('Регистрация успешна! Теперь войдите.', 'success')
+            return redirect(url_for('main.login'))
+        except sqlite3.IntegrityError:
+            flash('Email уже занят', 'error')
         finally:
             conn.close()
 
@@ -38,11 +50,65 @@ def register():
 def register_success():
     return "<h1>Регистрация прошла успешно!</h1><a href='/register'>Назад</a>"
 
-@main_bp.route('/login')
+
+@main_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute('SELECT id, password FROM users WHERE email = ?', (email,))
+            user = cursor.fetchone()
+
+            if not user:
+                flash('Пользователь не найден', 'error')
+                return redirect(url_for('main.login'))
+
+            if check_password_hash(user[1], password):  # Сравниваем хеш
+                session['user_id'] = user[0]
+                return redirect(url_for('main.profile'))
+            else:
+                flash('Неверный пароль', 'error')
+                return redirect(url_for('main.login'))
+
+        finally:
+            conn.close()
+
     return render_template('login.html')
 
-# Другие маршруты...
+@main_bp.route('/logout')
+def logout():
+    session.pop('user_id', None)  # Удаляем сессию
+    flash('Вы вышли из системы', 'info')
+    return redirect(url_for('main.index'))
+
+
+@main_bp.route('/profile')
+@login_required
+def profile():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, email, first_name, last_name, user_role FROM users WHERE id = ?', (session['user_id'],))
+    user_data = cursor.fetchone()
+    conn.close()
+
+    if user_data:
+        user = {
+            'id': user_data[0],
+            'email': user_data[1],
+            'first_name': user_data[2],
+            'last_name': user_data[3],
+            'role': user_data[4]
+        }
+        return render_template('profile.html', user=user)
+
+    flash('Пользователь не найден', 'error')
+    return redirect(url_for('main.login'))
+
 @main_bp.route('/catalog')
 def catalog():
     return render_template('catalog.html')

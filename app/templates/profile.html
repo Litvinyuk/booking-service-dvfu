@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой профиль | Сервис бронирования ДВФУ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="https://dvfu.ru" target="_blank">
+                <img src="{{ url_for('static', filename='images/dvfu_logo.png') }}" alt="ДВФУ" class="logo">
+            </a>
+            <h1><a href="{{ url_for('main.index') }}">Сервис бронирования пространств</a></h1>
+            <div class="auth-container">
+                {% if 'user_id' in session %}
+                    <a href="{{ url_for('main.profile') }}" class="auth-link">Профиль</a>
+                    <a href="{{ url_for('main.logout') }}" class="auth-link">Выход</a>
+                {% else %}
+                    <a href="{{ url_for('main.register') }}" class="auth-link">Регистрация</a>
+                    <a href="{{ url_for('main.login') }}" class="auth-link">Вход</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="profile-page">
+        <div class="profile-container">
+            <div class="profile-header">
+                <h2 class="profile-title">Мой профиль</h2>
+                <a href="{{ url_for('main.logout') }}" class="btn btn-logout">Выйти</a>
+            </div>
+
+            <div class="profile-content">
+                <div class="profile-sidebar">
+                    <div class="avatar">
+                        {{ user.first_name[0] }}{{ user.last_name[0] }}
+                    </div>
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                    <span class="role-badge">{{ user.role }}</span>
+                </div>
+
+                <div class="profile-main">
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ user.email }}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">ID пользователя</span>
+                        <span class="info-value">{{ user.id }}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Статус</span>
+                        <span class="info-value">
+                            {% if user.role == 'student' %}
+                                Студент
+                            {% elif user.role == 'teacher' %}
+                                Преподаватель
+                            {% elif user.role == 'admin' %}
+                                Администратор
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="actions">
+                        <a href="{{ url_for('main.catalog') }}" class="btn">Каталог пространств</a>
+                        <a href="{{ url_for('main.booking') }}" class="btn">Мои бронирования</a>
+                        {% if user.role == 'admin' %}
+                            <a href="/admin" class="btn">Панель администратора</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 ДВФУ</p>
+        <p><a href="https://dvfu.ru" target="_blank">Официальный сайт ДВФУ</a> | Контакты: mail@dvfu.ru</p>
+    </footer>
+</body>
+</html>

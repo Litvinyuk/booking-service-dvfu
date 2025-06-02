@@ -54,6 +54,7 @@
 
 .page-content {
     padding-top: 100px;
+    flex: 1;
 }
 /* Кнопка входа/регистрации */
 .auth-container {

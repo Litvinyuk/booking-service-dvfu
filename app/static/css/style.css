@@ -394,8 +394,65 @@ p {
 
 .catalog-link {
     text-align: center;
-    padding: 2rem;
+    padding: 3 rem 2rem;
     margin: 2rem 0;
+}
+
+.catalog-link .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #0066cc, #004080);
+    color: white;
+    padding: 1.2rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+}
+
+.catalog-link .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+    background: linear-gradient(135deg, #004080, #0066cc);
+}
+
+.catalog-link .btn:active {
+    transform: translateY(1px);
+}
+
+/* Эффект при наведении */
+.catalog-link .btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.catalog-link .btn:hover::after {
+    opacity: 1;
+}
+
+/* Иконка стрелки */
+.catalog-link .btn::before {
+    content: '→';
+    margin-left: 10px;
+    transition: transform 0.3s;
+}
+
+.catalog-link .btn:hover::before {
+    transform: translateX(5px);
 }
 
 /* Анимации */

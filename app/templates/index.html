@@ -29,6 +29,51 @@
     </div>
 </section>
 
+<!-- Блок с описанием -->
+<section class="info-section" id="info">
+    <h2>О сервисе</h2>
+    <p>Сервис бронирования пространств ДВФУ предоставляет удобную платформу для резервирования аудиторий, конференц-залов и других помещений университета. Мы стремимся сделать процесс бронирования максимально простым и прозрачным.</p>
+</section>
+
+<!-- Часто задаваемые вопросы -->
+<section class="faq-section" id="faq">
+    <h2>Часто задаваемые вопросы</h2>
+    <details>
+        <summary>Как забронировать пространство?</summary>
+        <p>Выберите подходящее пространство в каталоге, укажите дату и время, затем подтвердите бронирование.</p>
+    </details>
+    <details>
+        <summary>Можно ли отменить бронь?</summary>
+        <p>Да, вы можете отменить бронирование через личный кабинет не менее чем за 24 часа до начала.</p>
+    </details>
+    <details>
+        <summary>Сколько пространств можно бронировать?</summary>
+        <p>Вы можете иметь до 2 активных бронирований одновременно.</p>
+    </details>
+</section>
+
+<!-- Кнопка перехода в каталог -->
+<section class="catalog-link">
+    <a href="/catalog" class="btn">Перейти в каталог</a>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('.slider-section, .info-section, .faq-section, .catalog-link');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    });
+</script>
 
 {% include "footer.html" %}
 {% endblock %}

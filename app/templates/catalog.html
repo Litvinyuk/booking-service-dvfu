@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог пространств | DVFU</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Шапка */
+        .header-container {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: #004080;
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            height: 40px;
+        }
+
+        .header-title {
+            flex: 1;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .header-title a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Панель навигации */
+        .nav-panel {
+            background: #0066cc;
+            padding: 0.8rem 0;
+        }
+
+        .nav-panel ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-panel li {
+            margin: 0 15px;
+        }
+
+        .nav-panel a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-panel a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-panel a.active {
+            background: rgba(255,255,255,0.3);
+            font-weight: bold;
+        }
+
+        /* Основной контент */
+        .catalog-container {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .catalog-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .catalog-header h1 {
+            color: #004080;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Фильтры */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* Плиточный каталог */
+        .spaces-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .space-tile {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .space-tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .space-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .space-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .space-tile:hover .space-image img {
+            transform: scale(1.05);
+        }
+
+        .space-info {
+            padding: 1.2rem;
+        }
+
+        .space-title {
+            font-size: 1.2rem;
+            color: #004080;
+            margin-bottom: 0.5rem;
+        }
+
+        .space-location {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .space-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .space-capacity::before {
+            content: "👥";
+            margin-right: 0.3rem;
+        }
+
+        .space-type {
+            background: #e6f2ff;
+            color: #0066cc;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .space-description {
+            line-height: 1.4;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            color: #555;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Футер */
+        .site-footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #ecf0f1;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #bdc3c7;
+            margin: 0.5rem 0;
+            display: block;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #34495e;
+            font-size: 0.9rem;
+            color: #bdc3c7;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .header-title {
+                margin: 0.5rem 0;
+            }
+            
+            .nav-panel ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-panel li {
+                margin: 5px 0;
+            }
+            
+            .spaces-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header class="header-container">
+        <img src="logo.svg" alt="Логотип DVFU" class="logo">
+        <div class="header-title">
+            <a href="/">Сервис бронирования пространств ДВФУ</a>
+        </div>
+    </header>
+
+    <!-- Панель навигации -->
+    <nav class="nav-panel">
+        <ul>
+            <li><a href="/">Главная</a></li>
+            <li><a href="/catalog" class="active">Каталог пространств</a></li>
+            <li><a href="#info">О сервисе</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="/contacts">Контакты</a></li>
+        </ul>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="catalog-container">
+        <div class="catalog-header">
+            <h1>Каталог пространств для бронирования</h1>
+            <p>Выберите подходящее пространство для вашего мероприятия</p>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filters">
+            <div class="filter-group">
+                <label for="type-filter">Тип:</label>
+                <select id="type-filter">
+                    <option value="all">Все типы</option>
+                    <option value="conference">Конференц-залы</option>
+                    <option value="lecture">Лекционные аудитории</option>
+                    <option value="meeting">Переговорные</option>
+                    <option value="event">Пространства для мероприятий</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="capacity-filter">Вместимость:</label>
+                <select id="capacity-filter">
+                    <option value="all">Любая</option>
+                    <option value="5">До 5 человек</option>
+                    <option value="10">До 10 человек</option>
+                    <option value="20">До 20 человек</option>
+                    <option value="50">До 50 человек</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="building-filter">Корпус:</label>
+                <select id="building-filter">
+                    <option value="all">Все корпуса</option>
+                    <option value="main">Главный корпус</option>
+                    <option value="science">Научный корпус</option>
+                    <option value="library">Библиотека</option>
+                    <option value="sport">Спортивный комплекс</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Плиточный каталог -->
+        <div class="spaces-grid">
+            <!-- Пример пространства 1 -->
+            <a href="booking.html?space=conf3" class="space-tile">
+                <div class="space-image">
+                    <img src="conference-room.jpg" alt="Конференц-зал №3">
+                </div>
+                <div class="space-info">
+                    <h3 class="space-title">Конференц-зал №3</h3>
+                    <p class="space-location">Главный корпус, 2 этаж, каб. 205</p>
+                    <div class="space-meta">
+                        <span class="space-capacity">20 человек</span>
+                        <span class="space-type">Конференц-зал</span>
+                    </div>
+                    <p class="space-description">
+                        Современный конференц-зал с проектором, экраном и звуковой системой. Идеально подходит для презентаций и совещаний.
+                    </p>
+                </div>
+            </a>
+
+            <!-- Пример пространства 2 -->
+            <a href="booking.html?space=lecture12" class="space-tile">
+                <div class="space-image">
+                    <img src="lecture-hall.jpg" alt="Лекционная аудитория №12">
+                </div>
+                <div class="space-info">
+                    <h3 class="space-title">Лекционная аудитория №12</h3>
+                    <p class="space-location">Научный корпус, 3 этаж, каб. 312</p>
+                    <div class="space-meta">
+                        <span class="space-capacity">50 человек</span>
+                        <span class="space-type">Лекционная</span>
+                    </div>
+                    <p class="space-description">
+                        Просторная лекционная аудитория с современным оборудованием, проектором и интерактивной доской.
+                    </p>
+                </div>
+            </a>
+
+            <!-- Пример пространства 3 -->
+            <a href="booking.html?space=meeting5" class="space-tile">
+                <div class="space-image">
+                    <img src="meeting-room.jpg" alt="Переговорная №5">
+                </div>
+                <div class="space-info">
+                    <h3 class="space-title">Переговорная №5</h3>
+                    <p class="space-location">Главный корпус, 1 этаж, каб. 105</p>
+                    <div class="space-meta">
+                        <span class="space-capacity">8 человек</span>
+                        <span class="space-type">Переговорная</span>
+                    </div>
+                    <p class="space-description">
+                        Уютная переговорная комната для небольших совещаний. Оснащена телевизором и маркерной доской.
+                    </p>
+                </div>
+            </a>
+
+            <!-- Пример пространства 4 -->
+            <a href="booking.html?space=event-hall" class="space-tile">
+                <div class="space-image">
+                    <img src="event-space.jpg" alt="Пространство для мероприятий">
+                </div>
+                <div class="space-info">
+                    <h3 class="space-title">Пространство для мероприятий</h3>
+                    <p class="space-location">Библиотека, 1 этаж, зал А</p>
+                    <div class="space-meta">
+                        <span class="space-capacity">100 человек</span>
+                        <span class="space-type">Мероприятия</span>
+                    </div>
+                    <p class="space-description">
+                        Большое открытое пространство для проведения мероприятий, выставок и презентаций. Имеется сцена и звуковое оборудование.
+                    </p>
+                </div>
+            </a>
+
+            <!-- Пример пространства 5 -->
+            <a href="booking.html?space=conf7" class="space-tile">
+                <div class="space-image">
+                    <img src="conference-room2.jpg" alt="Конференц-зал №7">
+                </div>
+                <div class="space-info">
+                    <h3 class="space-title">Конференц-зал №7</h3>
+                    <p class="space-location">Спортивный комплекс, 2 этаж</p>
+                    <div class="space-meta">
+                        <span class="space-capacity">15 человек</span>
+                        <span class="space-type">Конференц-зал</span>
+                    </div>
+                    <p class="space-description">
+                        Комфортабельный конференц-зал с панорамными окнами. Подходит для рабочих встреч и небольших презентаций.
+                    </p>
+                </div>
+            </a>
+
+            <!-- Пример пространства 6 -->
+            <a href="booking.html?space=lecture8" class="space-tile">
+                <div class="space-image">
+                    <img src="lecture-hall2.jpg" alt="Лекционная аудитория №8">
+                </div>
+                <div class="space-info">
+                    <h3 class="space-title">Лекционная аудитория №8</h3>
+                    <p class="space-location">Главный корпус, 4 этаж, каб. 408</p>
+                    <div class="space-meta">
+                        <span class="space-capacity">30 человек</span>
+                        <span class="space-type">Лекционная</span>
+                    </div>
+                    <p class="space-description">
+                        Современная аудитория с удобными местами и хорошей акустикой. Имеется проектор и экран.
+                    </p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <p>Email: booking@dvfu.ru</p>
+                <p>Телефон: +7 (123) 456-78-90</p>
+                <p>Адрес: г. Владивосток, о. Русский</p>
+            </div>
+            <div class="footer-section">
+                <h3>Режим работы</h3>
+                <p>Пн-Пт: 9:00 - 18:00</p>
+                <p>Сб-Вс: выходной</p>
+            </div>
+            <div class="footer-section">
+                <h3>Быстрые ссылки</h3>
+                <a href="/catalog">Каталог пространств</a>
+                <a href="/rules">Правила бронирования</a>
+                <a href="/faq">Частые вопросы</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Сервис бронирования пространств ДВФУ. Все права защищены.</p>
+        </div>
+    </footer>
+</body>
+</html>

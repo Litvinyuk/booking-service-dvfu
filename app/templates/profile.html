@@ -2,29 +2,19 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мой профиль | Сервис бронирования ДВФУ</title>
+    <title>{% block title %}Мой профиль | Сервис бронирования ДВФУ{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <a href="https://dvfu.ru" target="_blank">
-                <img src="{{ url_for('static', filename='images/dvfu_logo.png') }}" alt="ДВФУ" class="logo">
-            </a>
-            <h1><a href="{{ url_for('main.index') }}">Сервис бронирования пространств</a></h1>
-            <div class="auth-container">
-                {% if 'user_id' in session %}
-                    <a href="{{ url_for('main.profile') }}" class="auth-link">Профиль</a>
-                    <a href="{{ url_for('main.logout') }}" class="auth-link">Выход</a>
-                {% else %}
-                    <a href="{{ url_for('main.register') }}" class="auth-link">Регистрация</a>
-                    <a href="{{ url_for('main.login') }}" class="auth-link">Вход</a>
-                {% endif %}
-            </div>
+    <header class="header-container">
+        <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
+        <div class="header-title">
+            <a href="/">Сервис бронирования пространств</a>
         </div>
     </header>
 
-    <main class="profile-page">
+    <main class="page-content profile-page">
         <div class="profile-container">
             <div class="profile-header">
                 <h2 class="profile-title">Мой профиль</h2>
@@ -37,22 +27,22 @@
                         {{ user.first_name[0] }}{{ user.last_name[0] }}
                     </div>
                     <h3>{{ user.first_name }} {{ user.last_name }}</h3>
-                    <span class="role-badge">{{ user.role }}</span>
+                    <span class="role-badge {{ user.role }}">{{ user.role }}</span>
                 </div>
 
                 <div class="profile-main">
                     <div class="info-row">
-                        <span class="info-label">Email</span>
+                        <span class="info-label">Email:</span>
                         <span class="info-value">{{ user.email }}</span>
                     </div>
 
                     <div class="info-row">
-                        <span class="info-label">ID пользователя</span>
+                        <span class="info-label">ID пользователя:</span>
                         <span class="info-value">{{ user.id }}</span>
                     </div>
 
                     <div class="info-row">
-                        <span class="info-label">Статус</span>
+                        <span class="info-label">Статус:</span>
                         <span class="info-value">
                             {% if user.role == 'student' %}
                                 Студент
@@ -64,11 +54,11 @@
                         </span>
                     </div>
 
-                    <div class="actions">
-                        <a href="{{ url_for('main.catalog') }}" class="btn">Каталог пространств</a>
-                        <a href="{{ url_for('main.booking') }}" class="btn">Мои бронирования</a>
+                    <div class="profile-actions">
+                        <a href="{{ url_for('main.catalog') }}" class="btn btn-primary">Каталог пространств</a>
+                        <a href="{{ url_for('main.booking') }}" class="btn btn-primary">Мои бронирования</a>
                         {% if user.role == 'admin' %}
-                            <a href="/admin" class="btn">Панель администратора</a>
+                            <a href="/admin" class="btn btn-admin">Панель администратора</a>
                         {% endif %}
                     </div>
                 </div>
@@ -76,9 +66,22 @@
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 ДВФУ</p>
-        <p><a href="https://dvfu.ru" target="_blank">Официальный сайт ДВФУ</a> | Контакты: mail@dvfu.ru</p>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <p>Email: mail@dvfu.ru</p>
+                <p>Телефон: +7 (123) 456-78-90</p>
+            </div>
+            <div class="footer-section">
+                <h3>Ссылки</h3>
+                <a href="https://dvfu.ru" target="_blank">Официальный сайт ДВФУ</a>
+                <a href="{{ url_for('main.space') }}">Частые вопросы</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ДВФУ. Все права защищены.</p>
+        </div>
     </footer>
 </body>
 </html>

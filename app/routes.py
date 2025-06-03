@@ -8,7 +8,6 @@ main_bp = Blueprint('main', __name__)
 def login_required(f):
     def wrapper(*args, **kwargs):
         if 'user_id' not in session:
-            flash('Пожалуйста, войдите в систему', 'error')
             return redirect(url_for('main.login'))
         return f(*args, **kwargs)
     wrapper.__name__ = f.__name__
@@ -106,7 +105,6 @@ def profile():
         }
         return render_template('profile.html', user=user)
 
-    flash('Пользователь не найден', 'error')
     return redirect(url_for('main.login'))
 
 @main_bp.route('/catalog')

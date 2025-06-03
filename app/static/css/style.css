@@ -23,6 +23,7 @@
 
 .logo {
     height: 40px;
+    weight: auto;
 }
 
 .header-title {
@@ -476,5 +477,167 @@ p {
     
     .info-section, .faq-section {
         padding: 2rem 1rem;
+    }
+}
+
+
+/* Стили профиля */
+.profile-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.profile-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-title {
+    font-size: 1.8rem;
+    color: #004080;
+    margin: 0;
+}
+
+.btn-logout {
+    background: #e74c3c;
+    padding: 0.5rem 1rem;
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+}
+
+.profile-content {
+    display: flex;
+    padding: 2rem;
+}
+
+.profile-sidebar {
+    width: 250px;
+    padding-right: 2rem;
+    border-right: 1px solid #eee;
+    text-align: center;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    background: #004080;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.role-badge.student {
+    background: #3498db;
+    color: white;
+}
+
+.role-badge.teacher {
+    background: #2ecc71;
+    color: white;
+}
+
+.role-badge.admin {
+    background: #e74c3c;
+    color: white;
+}
+
+.profile-main {
+    flex: 1;
+    padding-left: 2rem;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #555;
+    width: 180px;
+}
+
+.info-value {
+    color: #333;
+    flex: 1;
+}
+
+.profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-primary {
+    background: #0066cc;
+}
+
+.btn-primary:hover {
+    background: #0052a3;
+}
+
+.btn-admin {
+    background: #e74c3c;
+}
+
+.btn-admin:hover {
+    background: #c0392b;
+}
+
+@media (max-width: 768px) {
+    .profile-content {
+        flex-direction: column;
+    }
+
+    .profile-sidebar {
+        width: 100%;
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .profile-main {
+        padding-left: 0;
+    }
+
+    .info-row {
+        flex-direction: column;
+    }
+
+    .info-label {
+        width: 100%;
+        margin-bottom: 0.5rem;
     }
 }

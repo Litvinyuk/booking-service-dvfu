@@ -14,8 +14,11 @@
             <a href="/">Сервис бронирования пространств</a>
         </div>
         <div class="user-icon">
-            <a href="#"><img src="{{ url_for('static', filename='images/user-icon.svg') }}" alt="Профиль"></a>
-
+            {% if 'user_id' in session %}
+                <a href="{{ url_for('main.profile') }}"><img src="{{ url_for('static', filename='images/user-icon.svg') }}" alt="Профиль"></a>
+            {% else %}
+                <a href="{{ url_for('main.login') }}"><img src="{{ url_for('static', filename='images/login-icon.svg') }}" alt="Вход"></a>
+            {% endif %}
         </div>
     </header>
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог пространств | DVFU</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -38,6 +39,7 @@
 
         .logo {
             height: 40px;
+
         }
 
         .header-title {
@@ -298,9 +300,16 @@
 <body>
     <!-- Шапка -->
     <header class="header-container">
-        <img src="logo.svg" alt="Логотип DVFU" class="logo">
+        <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
         <div class="header-title">
-            <a href="/">Сервис бронирования пространств ДВФУ</a>
+            <a href="/">Сервис бронирования пространств</a>
+        </div>
+        <div class="user-icon">
+            {% if 'user_id' in session %}
+                <a href="{{ url_for('main.profile') }}"><img src="{{ url_for('static', filename='images/user-icon.svg') }}" alt="Профиль"></a>
+            {% else %}
+                <a href="{{ url_for('main.login') }}"><img src="{{ url_for('static', filename='images/login-icon.svg') }}" alt="Вход"></a>
+            {% endif %}
         </div>
     </header>
 

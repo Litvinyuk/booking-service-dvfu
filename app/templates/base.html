@@ -4,28 +4,25 @@
     <meta charset="UTF-8">
     <title>{% block title %}Сервис бронирования ДВФУ{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <a href="https://dvfu.ru" target="_blank">
-                <img src="{{ url_for('static', filename='images/dvfu_logo.png') }}" alt="ДВФУ" class="logo">
-            </a>
-            <h1><a href="{{ url_for('main.index') }}">Сервис бронирования пространств</a></h1>
-            <div class="auth-container">
-                <a href="{{ url_for('main.register') }}" class="auth-link">Регистрация</a>
-                <a href="{{ url_for('main.login') }}" class="auth-link">Вход</a>
-            </div>
+
+    <header class="header-container">
+        <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
+        <div class="header-title">
+            <a href="/">Сервис бронирования пространств</a>
+        </div>
+        <div class="user-icon">
+            <a href="#"><img src="{{ url_for('static', filename='images/user-icon.svg') }}" alt="Профиль"></a>
+
         </div>
     </header>
 
-    <main>
+    <main class="page-content">
         {% block content %}{% endblock %}
     </main>
-    <footer>
-        <p>&copy; 2025 ДВФУ</p>
-        <p><a href="https://dvfu.ru" target="_blank">Официальный сайт ДВФУ</a> | Контакты: mail@dvfu.ru</p>
-    </footer>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

@@ -1,7 +1,7 @@
 from app import create_app
 
-#import app.models.database as database
-#database.init_db()
+# import app.models.database as database
+# database.init_db()
 
 app = create_app()
 

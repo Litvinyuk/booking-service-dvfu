@@ -282,3 +282,53 @@ html, body {
     margin-right: -50vw;
 }
 
+/* Панель задач (навигационное меню) */
+.task-panel {
+    background: #0066cc;
+    padding: 0.5rem 0;
+    margin-top: 60px; /* Учитываем высоту шапки */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.task-panel ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.task-panel li {
+    margin: 0 15px;
+}
+
+.task-panel a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.task-panel a:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.task-panel a.active {
+    background: rgba(255,255,255,0.3);
+    font-weight: bold;
+}
+
+/* Адаптивность для панели задач */
+@media (max-width: 768px) {
+    .task-panel ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .task-panel li {
+        margin: 5px 0;
+    }
+}

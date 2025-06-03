@@ -120,3 +120,7 @@ def booking():
 @main_bp.route('/space')
 def space():
     return render_template('space.html')
+
+@main_bp.route('/about')
+def about():
+    return render_template('about.html')

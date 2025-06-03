@@ -1,0 +1,319 @@
+/* Сброс и базовые стили */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', 'Arial', sans-serif;
+    font-weight: 600;
+    color: #004080;
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+h2:after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #0066cc;
+    margin: 0.5rem auto 0;
+}
+
+p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: #555;
+    line-height: 1.7;
+}
+
+/* Основные стили страницы */
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    padding-top: 100px; /* Учитываем высоту шапки */
+}
+
+.about-hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #0066cc, #004080);
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.about-hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.about-hero p {
+    font-size: 1.4rem;
+    max-width: 800px;
+    margin: 0 auto;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Секция с миссией */
+.about-mission {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3rem;
+    margin: 4rem 0;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.mission-content {
+    flex: 1;
+    min-width: 300px;
+}
+
+.mission-image {
+    flex: 1;
+    min-width: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mission-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.mission-image img:hover {
+    transform: scale(1.03);
+}
+
+/* Особенности сервиса */
+.features-section {
+    margin: 5rem 0;
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.features-section h2 {
+    text-align: center;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eaeaea;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.feature-card h3 {
+    color: #004080;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+/* Как это работает */
+.how-it-works {
+    margin: 5rem 0;
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.how-it-works h2 {
+    text-align: center;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    counter-reset: step-counter;
+    margin-top: 3rem;
+    padding: 0;
+}
+
+.steps li {
+    position: relative;
+    padding-left: 80px;
+    list-style: none;
+    min-height: 100px;
+}
+
+.steps li span {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60px;
+    height: 60px;
+    background: #004080;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.steps h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+/* Контакты */
+.contact-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3rem;
+    margin: 5rem 0;
+    background: #f0f7ff;
+    padding: 3rem;
+    border-radius: 16px;
+}
+
+.contact-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.contact-image {
+    flex: 1;
+    min-width: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.contact-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.contact-list {
+    padding-left: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.contact-list li {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.contact-list li::before {
+    content: "•";
+    margin-right: 10px;
+    color: #0066cc;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.contact-list a {
+    color: #0066cc;
+    text-decoration: none;
+    transition: color 0.3s;
+    margin-left: 5px;
+}
+
+.contact-list a:hover {
+    color: #004080;
+    text-decoration: underline;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .about-hero {
+        padding: 2rem 1rem;
+    }
+    
+    .about-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .about-hero p {
+        font-size: 1.1rem;
+    }
+    
+    .contact-section {
+        padding: 2rem;
+    }
+    
+    .about-mission, .contact-section {
+        flex-direction: column;
+    }
+    
+    .steps li {
+        padding-left: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-container {
+        padding: 1rem;
+    }
+    
+    .about-hero {
+        padding: 1.5rem 1rem;
+    }
+    
+    .features-section, .how-it-works {
+        padding: 1.5rem;
+    }
+    
+    .steps li {
+        padding-left: 60px;
+    }
+    
+    .steps li span {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+}

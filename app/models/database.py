@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))  # корень проекта
-DB_PATH = os.path.join(BASE_DIR,'app', 'data', 'spaces.db')
+DB_PATH = os.path.join(BASE_DIR,'app', 'data', 'data.db')
 
 
 def get_connection():
@@ -15,17 +15,18 @@ def init_db():
 
     # Таблица пространств
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS spaces (
+            CREATE TABLE IF NOT EXISTS spaces (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             location TEXT,
-            capacity INTEGER
+            capacity INTEGER,
+            image_name TEXT
         )
     ''')
 
     # Таблица бронирований
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS bookings (
+            CREATE TABLE IF NOT EXISTS bookings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             space_id INTEGER,
@@ -39,7 +40,7 @@ def init_db():
 
     # Таблица пользователей
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT UNIQUE NOT NULL,
             first_name TEXT NOT NULL,

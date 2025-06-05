@@ -366,117 +366,36 @@
         </div>
 
         <!-- Плиточный каталог -->
-        <div class="spaces-grid">
-            <!-- Пример пространства 1 -->
-            <a href="booking.html?space=conf3" class="space-tile">
+       <div class="spaces-grid">
+            {% for space in spaces %}
+            <a href="{{ url_for('main.booking', space_id=space.id) }}" class="space-tile">
                 <div class="space-image">
-                    <img src="conference-room.jpg" alt="Конференц-зал №3">
+                    <img src="{{ url_for('static', filename='images/' + space.image) }}" alt="{{ space.space_title }}">
                 </div>
                 <div class="space-info">
-                    <h3 class="space-title">Конференц-зал №3</h3>
-                    <p class="space-location">Главный корпус, 2 этаж, каб. 205</p>
+                    <h3 class="space-title">{{ space.title }}</h3>
+                    <p class="space-location">{{ space.location }}</p>
                     <div class="space-meta">
-                        <span class="space-capacity">20 человек</span>
-                        <span class="space-type">Конференц-зал</span>
+                        <span class="space-capacity">{{ space.capacity }} человек</span>
+                        <span class="space-type">{{ space.type }}</span>
                     </div>
                     <p class="space-description">
-                        Современный конференц-зал с проектором, экраном и звуковой системой. Идеально подходит для презентаций и совещаний.
+                        {{ space.description }}
                     </p>
                 </div>
             </a>
-
-            <!-- Пример пространства 2 -->
-            <a href="booking.html?space=lecture12" class="space-tile">
-                <div class="space-image">
-                    <img src="lecture-hall.jpg" alt="Лекционная аудитория №12">
-                </div>
-                <div class="space-info">
-                    <h3 class="space-title">Лекционная аудитория №12</h3>
-                    <p class="space-location">Научный корпус, 3 этаж, каб. 312</p>
-                    <div class="space-meta">
-                        <span class="space-capacity">50 человек</span>
-                        <span class="space-type">Лекционная</span>
-                    </div>
-                    <p class="space-description">
-                        Просторная лекционная аудитория с современным оборудованием, проектором и интерактивной доской.
-                    </p>
-                </div>
-            </a>
-
-            <!-- Пример пространства 3 -->
-            <a href="booking.html?space=meeting5" class="space-tile">
-                <div class="space-image">
-                    <img src="meeting-room.jpg" alt="Переговорная №5">
-                </div>
-                <div class="space-info">
-                    <h3 class="space-title">Переговорная №5</h3>
-                    <p class="space-location">Главный корпус, 1 этаж, каб. 105</p>
-                    <div class="space-meta">
-                        <span class="space-capacity">8 человек</span>
-                        <span class="space-type">Переговорная</span>
-                    </div>
-                    <p class="space-description">
-                        Уютная переговорная комната для небольших совещаний. Оснащена телевизором и маркерной доской.
-                    </p>
-                </div>
-            </a>
-
-            <!-- Пример пространства 4 -->
-            <a href="booking.html?space=event-hall" class="space-tile">
-                <div class="space-image">
-                    <img src="event-space.jpg" alt="Пространство для мероприятий">
-                </div>
-                <div class="space-info">
-                    <h3 class="space-title">Пространство для мероприятий</h3>
-                    <p class="space-location">Библиотека, 1 этаж, зал А</p>
-                    <div class="space-meta">
-                        <span class="space-capacity">100 человек</span>
-                        <span class="space-type">Мероприятия</span>
-                    </div>
-                    <p class="space-description">
-                        Большое открытое пространство для проведения мероприятий, выставок и презентаций. Имеется сцена и звуковое оборудование.
-                    </p>
-                </div>
-            </a>
-
-            <!-- Пример пространства 5 -->
-            <a href="booking.html?space=conf7" class="space-tile">
-                <div class="space-image">
-                    <img src="conference-room2.jpg" alt="Конференц-зал №7">
-                </div>
-                <div class="space-info">
-                    <h3 class="space-title">Конференц-зал №7</h3>
-                    <p class="space-location">Спортивный комплекс, 2 этаж</p>
-                    <div class="space-meta">
-                        <span class="space-capacity">15 человек</span>
-                        <span class="space-type">Конференц-зал</span>
-                    </div>
-                    <p class="space-description">
-                        Комфортабельный конференц-зал с панорамными окнами. Подходит для рабочих встреч и небольших презентаций.
-                    </p>
-                </div>
-            </a>
-
-            <!-- Пример пространства 6 -->
-            <a href="booking.html?space=lecture8" class="space-tile">
-                <div class="space-image">
-                    <img src="lecture-hall2.jpg" alt="Лекционная аудитория №8">
-                </div>
-                <div class="space-info">
-                    <h3 class="space-title">Лекционная аудитория №8</h3>
-                    <p class="space-location">Главный корпус, 4 этаж, каб. 408</p>
-                    <div class="space-meta">
-                        <span class="space-capacity">30 человек</span>
-                        <span class="space-type">Лекционная</span>
-                    </div>
-                    <p class="space-description">
-                        Современная аудитория с удобными местами и хорошей акустикой. Имеется проектор и экран.
-                    </p>
-                </div>
-            </a>
+            {% endfor %}
         </div>
     </main>
     
 {% include 'footer.html'%}
 </body>
 </html>
+
+
+Enter title space: Леуционочка
+Enter location space: Пристанище АДА
+Enter capacity space: 1488
+Enter image space: testesteron.jpg
+Enter space description: Адский полдник закончился убийством Алины (прищепки) Юн на видео
+Enter space type: Лекция по дискретной математики

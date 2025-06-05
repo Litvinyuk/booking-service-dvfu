@@ -5,7 +5,7 @@ space_location = input('Enter location space: ')
 space_capacity = input('Enter capacity space: ')
 space_image = input('Enter image space: ')
 space_description = input('Enter space description: ')
-space_type = int(input('Enter space type: '))
+space_type = input('Enter space type: ')
 
 conn = get_connection()
 cursor = conn.cursor()

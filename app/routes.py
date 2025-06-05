@@ -12,6 +12,29 @@ def login_required(f):
     wrapper.__name__ = f.__name__
     return wrapper
 
+# Функция для получения всех пространств из БД
+def get_all_spaces():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM spaces')
+    spaces = cursor.fetchall()
+    conn.close()
+
+    # Преобразуем в список словарей для удобства
+    spaces_list = []
+    for space in spaces:
+        spaces_list.append({
+            'id': space[0],
+            'title': space[1],
+            'location': space[2],
+            'capacity': space[3],
+            'image': space[4],
+            'type': space[5],
+            'description': space[6]
+        })
+    return spaces_list
+
+
 @main_bp.route('/')
 def index():
     return render_template('index.html')
@@ -102,9 +125,12 @@ def profile():
 
     return redirect(url_for('main.login'))
 
+
+
 @main_bp.route('/catalog')
 def catalog():
-    return render_template('catalog.html')
+    spaces = get_all_spaces()
+    return render_template('catalog.html', spaces=spaces)
 
 @main_bp.route('/booking')
 def booking():

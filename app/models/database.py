@@ -48,7 +48,8 @@ def init_db():
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
             password TEXT NOT NULL,
-            user_role TEXT NOT NULL CHECK (user_role IN ('student', 'teacher', 'admin'))
+            user_role TEXT NOT NULL CHECK (user_role IN ('student', 'teacher')),
+            is_admin BOOLEAN
         )
     ''')
 

@@ -17,10 +17,12 @@ def init_db():
     cursor.execute('''
             CREATE TABLE IF NOT EXISTS spaces (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            location TEXT,
-            capacity INTEGER,
-            image_name TEXT
+            space_title TEXT NOT NULL,
+            space_location TEXT,
+            space_capacity INTEGER,
+            space_image TEXT,
+            space_type TEXT,
+            space_description TEXT
         )
     ''')
 

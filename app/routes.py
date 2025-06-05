@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from app.models.database import get_connection
 
@@ -24,7 +23,7 @@ def register():
         email = request.form['email']
         first_name = request.form['firstname']
         last_name = request.form['surname']
-        password = generate_password_hash(request.form['password'])  # Хешируем!
+        password = request.form['password']
         user_role = request.form['user_role']
 
         conn = get_connection()
@@ -45,10 +44,6 @@ def register():
 
     return render_template('register.html')
 
-@main_bp.route('/register-success')
-def register_success():
-    return "<h1>Регистрация прошла успешно!</h1><a href='/register'>Назад</a>"
-
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -67,7 +62,7 @@ def login():
                 flash('Пользователь не найден', 'error')
                 return redirect(url_for('main.login'))
 
-            if check_password_hash(user[1], password):  # Сравниваем хеш
+            if user[1] == password:
                 session['user_id'] = user[0]
                 return redirect(url_for('main.profile'))
             else:

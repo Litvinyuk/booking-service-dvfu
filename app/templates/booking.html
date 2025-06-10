@@ -263,70 +263,77 @@
         }
     </style>
 </head>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронирование пространства | DVFU</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
 <body>
     <!-- Шапка -->
     <header class="header-container">
-        <img src="logo.svg" alt="Логотип DVFU" class="logo">
+        <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
         <div class="header-title">
             <a href="/">Сервис бронирования пространств ДВФУ</a>
         </div>
     </header>
 
-    <!-- Основной контент -->
     <main class="booking-container">
+        <!-- Заголовок -->
         <div class="booking-header">
-            <h1>Конференц-зал №3</h1>
-            <p>Главный корпус, 2 этаж, помещение 205</p>
+            <h1>{{ space.title }}</h1>
+            <p>{{ space.location }}</p>
         </div>
 
+        <!-- Инфо о пространстве -->
         <div class="space-card">
             <div class="space-image">
-                <img src="conference-room.jpg" alt="Конференц-зал №3">
+                <img src="{{ url_for('static', filename='images/' + space.image) }}" alt="{{ space.title }}">
             </div>
             <div class="space-details">
-                <h2 class="space-title">Конференц-зал №3</h2>
+                <h2 class="space-title">{{ space.title }}</h2>
                 <div class="space-meta">
-                    <span>Вместимость: 20 человек</span>
-                    <span>Площадь: 45 м²</span>
-                    <span>Тип: Конференц-зал</span>
+                    <span>Вместимость: {{ space.capacity }} человек</span>
+                    <span>Тип: {{ space.type }}</span>
                 </div>
                 <div class="space-description">
-                    <p>Современный конференц-зал с проектором, экраном и звуковой системой. Идеально подходит для проведения презентаций, совещаний и учебных мероприятий. Оснащен кондиционером и удобными креслами.</p>
-                    <p><strong>Оборудование:</strong> проектор, экран, звуковая система, маркерная доска, Wi-Fi.</p>
+                    <p>{{ space.description }}</p>
                 </div>
             </div>
         </div>
 
+        <!-- Занятые слоты -->
+        <div class="booking-form">
+            <h2 class="form-title">Занятые слоты</h2>
+            {% if bookings %}
+                <ul>
+                    {% for booking in bookings %}
+                        <li>{{ booking[0] }} — {{ booking[1] }}–{{ booking[2] }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>На ближайшие дни свободно.</p>
+            {% endif %}
+        </div>
+
+        <!-- Форма -->
         <div class="booking-form">
             <h2 class="form-title">Забронировать пространство</h2>
-            <form>
+            <form method="POST">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="date">Дата</label>
-                        <input type="date" id="date" required>
+                        <input type="date" id="date" name="date" required>
                     </div>
                     <div class="form-group">
                         <label for="start-time">Время начала</label>
-                        <input type="time" id="start-time" required>
+                        <input type="time" id="start-time" name="start_time" required>
                     </div>
                     <div class="form-group">
                         <label for="end-time">Время окончания</label>
-                        <input type="time" id="end-time" required>
+                        <input type="time" id="end-time" name="end_time" required>
                     </div>
-                    <div class="form-group">
-                        <label for="purpose">Цель бронирования</label>
-                        <select id="purpose" required>
-                            <option value="">Выберите цель</option>
-                            <option value="meeting">Совещание</option>
-                            <option value="presentation">Презентация</option>
-                            <option value="training">Обучение</option>
-                            <option value="event">Мероприятие</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="notes">Дополнительная информация</label>
-                    <textarea id="notes" rows="3" placeholder="Укажите дополнительную информацию, если необходимо"></textarea>
                 </div>
                 <button type="submit" class="submit-btn">Забронировать</button>
             </form>
@@ -334,29 +341,6 @@
     </main>
 
     <!-- Футер -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Контакты</h3>
-                <p>Email: booking@dvfu.ru</p>
-                <p>Телефон: +7 (123) 456-78-90</p>
-                <p>Адрес: г. Владивосток, о. Русский</p>
-            </div>
-            <div class="footer-section">
-                <h3>Режим работы</h3>
-                <p>Пн-Пт: 9:00 - 18:00</p>
-                <p>Сб-Вс: выходной</p>
-            </div>
-            <div class="footer-section">
-                <h3>Быстрые ссылки</h3>
-                <a href="/catalog">Каталог пространств</a>
-                <a href="/rules">Правила бронирования</a>
-                <a href="/faq">Частые вопросы</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2023 Сервис бронирования пространств ДВФУ. Все права защищены.</p>
-        </div>
-    </footer>
+    {% include 'footer.html' %}
 </body>
 </html>

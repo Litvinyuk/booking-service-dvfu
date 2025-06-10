@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 import sqlite3
 from app.models.database import get_connection
+from datetime import datetime
 
 main_bp = Blueprint('main', __name__)
 
@@ -132,9 +133,71 @@ def catalog():
     spaces = get_all_spaces()
     return render_template('catalog.html', spaces=spaces)
 
-@main_bp.route('/booking')
-def booking():
-    return render_template('booking.html')
+from datetime import datetime
+
+@main_bp.route('/booking/<int:space_id>', methods=['GET', 'POST'])
+@login_required
+def booking(space_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        date = request.form['date']
+        start_time = request.form['start_time']
+        end_time = request.form['end_time']
+        user_id = session['user_id']
+
+        # Проверка конфликта по времени
+        cursor.execute('''
+            SELECT * FROM bookings
+            WHERE space_id = ? AND date = ?
+            AND (
+                (start_time < ? AND end_time > ?) OR
+                (start_time >= ? AND start_time < ?)
+            )
+        ''', (space_id, date, end_time, start_time, start_time, end_time))
+
+        conflict = cursor.fetchone()
+        if conflict:
+            flash('Это время уже занято. Пожалуйста, выберите другое.', 'error')
+        else:
+            cursor.execute('''
+                INSERT INTO bookings (space_id, user_id, date, start_time, end_time)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (space_id, user_id, date, start_time, end_time))
+            conn.commit()
+            flash('Бронирование успешно оформлено!', 'success')
+            return redirect(url_for('main.booking', space_id=space_id))
+
+    # Получение информации о пространстве
+    cursor.execute('SELECT * FROM spaces WHERE id = ?', (space_id,))
+    space_data = cursor.fetchone()
+
+    if not space_data:
+        flash('Пространство не найдено', 'error')
+        return redirect(url_for('main.catalog'))
+
+    space = {
+        'id': space_data[0],
+        'title': space_data[1],
+        'location': space_data[2],
+        'capacity': space_data[3],
+        'image': space_data[4],
+        'type': space_data[5],
+        'description': space_data[6],
+    }
+
+    # Получение всех броней на ближайшие 7 дней
+    cursor.execute('''
+        SELECT date, start_time, end_time FROM bookings
+        WHERE space_id = ? AND date >= date('now')
+        ORDER BY date, start_time
+    ''', (space_id,))
+    bookings = cursor.fetchall()
+    conn.close()
+
+    return render_template('booking.html', space=space, bookings=bookings)
+
 
 @main_bp.route('/space')
 def space():

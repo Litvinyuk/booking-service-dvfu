@@ -105,13 +105,27 @@ def logout():
     return redirect(url_for('main.index'))
 
 
+
 @main_bp.route('/profile')
 @login_required
 def profile():
     conn = get_connection()
     cursor = conn.cursor()
+
+    # Информация о пользователе
     cursor.execute('SELECT id, email, first_name, last_name, user_role FROM users WHERE id = ?', (session['user_id'],))
     user_data = cursor.fetchone()
+
+    # Бронирования пользователя
+    cursor.execute('''
+        SELECT b.booking_date, b.start_time, b.end_time, s.space_title, s.space_location
+        FROM bookings b
+        JOIN spaces s ON b.space_id = s.id
+        WHERE b.user_id = ?
+        ORDER BY b.booking_date, b.start_time
+    ''', (session['user_id'],))
+    bookings = cursor.fetchall()
+
     conn.close()
 
     if user_data:
@@ -122,7 +136,7 @@ def profile():
             'last_name': user_data[3],
             'role': user_data[4]
         }
-        return render_template('profile.html', user=user)
+        return render_template('profile.html', user=user, bookings=bookings)
 
     return redirect(url_for('main.login'))
 
@@ -150,7 +164,7 @@ def booking(space_id):
         # Проверка конфликта по времени
         cursor.execute('''
             SELECT * FROM bookings
-            WHERE space_id = ? AND date = ?
+            WHERE space_id = ? AND booking_date = ?
             AND (
                 (start_time < ? AND end_time > ?) OR
                 (start_time >= ? AND start_time < ?)
@@ -162,7 +176,7 @@ def booking(space_id):
             flash('Это время уже занято. Пожалуйста, выберите другое.', 'error')
         else:
             cursor.execute('''
-                INSERT INTO bookings (space_id, user_id, date, start_time, end_time)
+                INSERT INTO bookings (space_id, user_id, booking_date, start_time, end_time)
                 VALUES (?, ?, ?, ?, ?)
             ''', (space_id, user_id, date, start_time, end_time))
             conn.commit()
@@ -189,9 +203,9 @@ def booking(space_id):
 
     # Получение всех броней на ближайшие 7 дней
     cursor.execute('''
-        SELECT date, start_time, end_time FROM bookings
-        WHERE space_id = ? AND date >= date('now')
-        ORDER BY date, start_time
+        SELECT booking_date, start_time, end_time FROM bookings
+        WHERE space_id = ? AND booking_date >= date('now')
+        ORDER BY booking_date, start_time
     ''', (space_id,))
     bookings = cursor.fetchall()
     conn.close()

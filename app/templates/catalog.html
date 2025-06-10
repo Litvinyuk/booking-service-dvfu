@@ -3,14 +3,12 @@
 {% block title %}Бронирование пространства | DVFU{% endblock %}
 
 {% block content %}
-    <!-- Основной контент -->
     <main class="catalog-container">
         <div class="catalog-header">
             <h1>Каталог пространств для бронирования</h1>
             <p>Выберите подходящее пространство для вашего мероприятия</p>
         </div>
 
-        <!-- Фильтры -->
         <div class="filters">
             <div class="filter-group">
                 <label for="type-filter">Тип:</label>
@@ -44,7 +42,6 @@
             </div>
         </div>
 
-        <!-- Плиточный каталог -->
        <div class="spaces-grid">
             {% for space in spaces %}
             <a href="{{ url_for('main.booking', space_id=space.id) }}" class="space-tile">

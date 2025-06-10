@@ -32,7 +32,7 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             space_id INTEGER,
-            date TEXT NOT NULL,
+            booking_date TEXT NOT NULL,
             start_time TEXT NOT NULL,
             end_time TEXT NOT NULL,
             FOREIGN KEY(user_id) REFERENCES users(id),

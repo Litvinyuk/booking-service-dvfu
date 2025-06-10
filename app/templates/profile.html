@@ -4,57 +4,70 @@
 
 {% block content %}
 
-    <main class="page-content profile-page">
-        <div class="profile-container">
-            <div class="profile-header">
-                <h2 class="profile-title">Мой профиль</h2>
-                <a href="{{ url_for('main.logout') }}" class="btn btn-logout">Выйти</a>
+<main class="page-content profile-page">
+    <div class="profile-container">
+        <div class="profile-header">
+            <h2 class="profile-title">Мой профиль</h2>
+            <a href="{{ url_for('main.logout') }}" class="btn btn-logout">Выйти</a>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-sidebar">
+                <div class="avatar">
+                    {{ user.first_name[0] }}{{ user.last_name[0] }}
+                </div>
+                <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                <span class="role-badge {{ user.role }}">{{ user.role }}</span>
             </div>
 
-            <div class="profile-content">
-                <div class="profile-sidebar">
-                    <div class="avatar">
-                        {{ user.first_name[0] }}{{ user.last_name[0] }}
-                    </div>
-                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
-                    <span class="role-badge {{ user.role }}">{{ user.role }}</span>
+            <div class="profile-main">
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ user.email }}</span>
                 </div>
 
-                <div class="profile-main">
-                    <div class="info-row">
-                        <span class="info-label">Email:</span>
-                        <span class="info-value">{{ user.email }}</span>
-                    </div>
+                <div class="info-row">
+                    <span class="info-label">ID пользователя:</span>
+                    <span class="info-value">{{ user.id }}</span>
+                </div>
 
-                    <div class="info-row">
-                        <span class="info-label">ID пользователя:</span>
-                        <span class="info-value">{{ user.id }}</span>
-                    </div>
-
-                    <div class="info-row">
-                        <span class="info-label">Статус:</span>
-                        <span class="info-value">
-                            {% if user.role == 'student' %}
-                                Студент
-                            {% elif user.role == 'teacher' %}
-                                Преподаватель
-                            {% elif user.role == 'admin' %}
-                                Администратор
-                            {% endif %}
-                        </span>
-                    </div>
-
-                    <div class="profile-actions">
-                        <a href="{{ url_for('main.catalog') }}" class="btn btn-primary">Каталог пространств</a>
-                        <a href="{{ url_for('main.booking') }}" class="btn btn-primary">Мои бронирования</a>
-                        {% if user.role == 'admin' %}
-                            <a href="/admin" class="btn btn-admin">Панель администратора</a>
+                <div class="info-row">
+                    <span class="info-label">Статус:</span>
+                    <span class="info-value">
+                        {% if user.role == 'student' %}
+                            Студент
+                        {% elif user.role == 'teacher' %}
+                            Преподаватель
+                        {% elif user.role == 'admin' %}
+                            Администратор
                         {% endif %}
-                    </div>
+                    </span>
                 </div>
+
+                <div class="profile-actions">
+                    {% if user.role == 'admin' %}
+                        <a href="/admin" class="btn btn-admin">Панель администратора</a>
+                    {% endif %}
+                </div>
+
+                <!-- История бронирований -->
+                <div class="info-row booking-history">
+                    <h3>Мои бронирования</h3>
+                    {% if bookings %}
+                        <ul>
+                            {% for b in bookings %}
+                                <li>{{ b[0] }} — {{ b[1] }}–{{ b[2] }} ({{ b[3] }}, {{ b[4] }})</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>У вас пока нет бронирований.</p>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-{% include 'footer.html'%}
+{% include 'footer.html' %}
 {% endblock %}

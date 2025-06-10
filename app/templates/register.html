@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <title>Регистрация | Сервис бронирования ДВФУ</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_profile_register.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="header-container">
+     <header class="login-header">
         <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
         <div class="header-title">
             <a href="/">Сервис бронирования пространств</a>
         </div>
+        <div style="width: 35px;"></div> <!-- Выравнивающий элемент -->
     </header>
 
     <main class="page-content">

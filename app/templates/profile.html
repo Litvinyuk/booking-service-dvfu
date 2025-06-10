@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Мой профиль | Сервис бронирования ДВФУ{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header class="header-container">
-        <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
-        <div class="header-title">
-            <a href="/">Сервис бронирования пространств</a>
-        </div>
-    </header>
+{% extends "base.html" %}
+
+{% block title %}Бронирование пространства | DVFU{% endblock %}
+
+{% block content %}
 
     <main class="page-content profile-page">
         <div class="profile-container">
@@ -66,22 +56,5 @@
         </div>
     </main>
 
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Контакты</h3>
-                <p>Email: mail@dvfu.ru</p>
-                <p>Телефон: +7 (123) 456-78-90</p>
-            </div>
-            <div class="footer-section">
-                <h3>Ссылки</h3>
-                <a href="https://dvfu.ru" target="_blank">Официальный сайт ДВФУ</a>
-                <a href="{{ url_for('main.space') }}">Частые вопросы</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 ДВФУ. Все права защищены.</p>
-        </div>
-    </footer>
-</body>
-</html>
+{% include 'footer.html'%}
+{% endblock %}

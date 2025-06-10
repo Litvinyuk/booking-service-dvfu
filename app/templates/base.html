@@ -4,22 +4,34 @@
     <meta charset="UTF-8">
     <title>{% block title %}Сервис бронирования ДВФУ{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/catalog_booking.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_profile_register.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header class="header-container">
-        <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
-        <div class="header-title">
-            <a href="/">Сервис бронирования пространств</a>
+        <div class="header-top">
+            <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="Логотип ДВФУ"></a>
+            <div class="header-title">
+                <a href="/">Сервис бронирования пространств</a>
+            </div>
+            <div class="user-icon">
+                {% if 'user_id' in session %}
+                    <a href="{{ url_for('main.profile') }}"><img src="{{ url_for('static', filename='images/user-icon.svg') }}" alt="Профиль"></a>
+                {% else %}
+                    <a href="{{ url_for('main.login') }}"><img src="{{ url_for('static', filename='images/login-icon.svg') }}" alt="Вход"></a>
+                {% endif %}
+            </div>
         </div>
-        <div class="user-icon">
-            {% if 'user_id' in session %}
-                <a href="{{ url_for('main.profile') }}"><img src="{{ url_for('static', filename='images/user-icon.svg') }}" alt="Профиль"></a>
-            {% else %}
-                <a href="{{ url_for('main.login') }}"><img src="{{ url_for('static', filename='images/login-icon.svg') }}" alt="Вход"></a>
-            {% endif %}
-        </div>
+        <nav class="header-nav">
+            <ul>
+                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">Главная</a></li>
+                <li><a href="/catalog" class="{% if request.path == '/catalog' %}active{% endif %}">Каталог</a></li>
+                <li><a href="#info">О сервисе</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </nav>
     </header>
 
     <main class="page-content">
@@ -28,21 +40,26 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const slides = document.querySelector('.slides');
-            const images = document.querySelectorAll('.slides img');
-            const prev = document.querySelector('.prev');
-            const next = document.querySelector('.next');
-            let index = 0;
+    document.addEventListener('DOMContentLoaded', function () {
+        const slides = document.querySelector('.slides');
+        const images = document.querySelectorAll('.slides img');
+        const prev = document.querySelector('.prev');
+        const next = document.querySelector('.next');
+        let index = 0;
 
-            function showSlide(i) {
-                index = (i + images.length) % images.length;
-                slides.style.transform = `translateX(-${index * 100}%)`;
-            }
-
-            prev.addEventListener('click', () => showSlide(index - 1));
-            next.addEventListener('click', () => showSlide(index + 1));
+        // Устанавливаем ширину для каждого изображения
+        images.forEach(img => {
+            img.style.width = '100%';
         });
+
+        function showSlide(i) {
+            index = (i + images.length) % images.length;
+            slides.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        prev.addEventListener('click', () => showSlide(index - 1));
+        next.addEventListener('click', () => showSlide(index + 1));
+    });
     </script>
 </body>
 </html>

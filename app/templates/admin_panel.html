@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Панель администратора{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <h1>Панель администратора</h1>
+
+    <p>Добро пожаловать, <strong>{{ session.username }}</strong>!</p>
+
+    <div class="admin-actions">
+        <h2>Действия:</h2>
+        <ul>
+            <li><a href="{{ url_for('main.manage_users') }}">Управление пользователями</a></li>
+            <li><a href="{{ url_for('main.manage_bookings') }}">Управление бронированиями</a></li>
+            <li><a href="{{ url_for('main.catalog') }}">Перейти в каталог</a></li>
+            <li><a href="{{ url_for('main.profile') }}">Профиль</a></li>
+            <li><a href="{{ url_for('main.logout') }}">Выйти</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .admin-panel {
+        padding: 30px;
+        max-width: 800px;
+        margin: auto;
+        background: #f4f4f4;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .admin-panel h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .admin-actions h2 {
+        margin-top: 20px;
+    }
+
+    .admin-actions ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .admin-actions li {
+        margin: 10px 0;
+    }
+
+    .admin-actions a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .admin-actions a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

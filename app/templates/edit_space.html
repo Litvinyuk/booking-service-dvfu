@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ 'Редактирование пространства' if space else 'Добавление нового пространства' }}</h2>
+<form method="post">
+    <label for="title">Название:</label><br>
+    <input type="text" id="title" name="title" required value="{{ space.title if space else '' }}"><br><br>
+
+    <label for="location">Местоположение:</label><br>
+    <input type="text" id="location" name="location" required value="{{ space.location if space else '' }}"><br><br>
+
+    <label for="capacity">Вместимость:</label><br>
+    <input type="number" id="capacity" name="capacity" min="1" required value="{{ space.capacity if space else '' }}"><br><br>
+
+    <label for="image">Ссылка на изображение:</label><br>
+    <input type="text" id="image" name="image" value="{{ space.image if space else '' }}"><br><br>
+
+    <label for="type">Тип пространства:</label><br>
+    <input type="text" id="type" name="type" required value="{{ space.type if space else '' }}"><br><br>
+
+    <label for="description">Описание:</label><br>
+    <textarea id="description" name="description" rows="4">{{ space.description if space else '' }}</textarea><br><br>
+
+    <button type="submit">{{ 'Сохранить' }}</button>
+</form>
+{% endblock %}

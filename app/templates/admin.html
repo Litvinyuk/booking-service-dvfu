@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админка</title>
+</head>
+<body>
+    <h1>Добро пожаловать в админку!</h1>
+    <p>Здесь будет основная панель управления.</p>
+    <ul>
+        <li><a href="{{ url_for('main.manage_users') }}">Пользователи</a></li>
+        <li><a href="{{ url_for('main.manage_spaces') }}">Пространства</a></li>
+        <li><a href="{{ url_for('main.manage_bookings') }}">Бронирования</a></li>
+    </ul>
+</body>
+</html>

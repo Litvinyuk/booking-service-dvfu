@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ 'Редактирование бронирования' if booking else 'Добавление нового бронирования' }}</h2>
+<form method="post">
+    <label for="user_id">Пользователь:</label><br>
+    <select id="user_id" name="user_id" required>
+        {% for user in users %}
+        <option value="{{ user.id }}" {% if booking and booking.user_id == user.id %}selected{% endif %}>
+            {{ user.first_name }} {{ user.last_name }} ({{ user.email }})
+        </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label for="space_id">Пространство:</label><br>
+    <select id="space_id" name="space_id" required>
+        {% for space in spaces %}
+        <option value="{{ space.id }}" {% if booking and booking.space_id == space.id %}selected{% endif %}>
+            {{ space.title }}
+        </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label for="booking_date">Дата бронирования:</label><br>
+    <input type="date" id="booking_date" name="booking_date" required value="{{ booking.booking_date if booking else '' }}"><br><br>
+
+    <label for="start_time">Время начала:</label><br>
+    <input type="time" id="start_time" name="start_time" required value="{{ booking.start_time if booking else '' }}"><br><br>
+
+    <label for="end_time">Время окончания:</label><br>
+    <input type="time" id="end_time" name="end_time" required value="{{ booking.end_time if booking else '' }}"><br><br>
+
+    <button type="submit">Сохранить</button>
+</form>
+{% endblock %}

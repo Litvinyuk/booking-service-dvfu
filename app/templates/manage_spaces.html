@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Управление пространствами</h2>
+<a href="{{ url_for('main.add_space') }}">Добавить новое пространство</a>
+<table border="1" cellpadding="8" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <thead>
+        <tr>
+            <th>ID</th><th>Название</th><th>Местоположение</th><th>Вместимость</th><th>Тип</th><th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for space in spaces %}
+        <tr>
+            <td>{{ space.id }}</td>
+            <td>{{ space.title }}</td>
+            <td>{{ space.location }}</td>
+            <td>{{ space.capacity }}</td>
+            <td>{{ space.type }}</td>
+            <td>
+                <a href="{{ url_for('main.edit_space', space_id=space.id) }}">Редактировать</a> |
+                <form action="{{ url_for('main.edit_space', space_id=space.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Удалить пространство?');">
+                    <input type="hidden" name="delete" value="1">
+                    <button type="submit" style="background:none; border:none; color:red; cursor:pointer; padding:0;">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

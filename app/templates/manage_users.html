@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+
+<a href="{{ url_for('main.admin_index') }}" class="back-to-site">← Назад</a>
+
+<div class="gold-border border-top"></div>
+<div class="gold-border border-bottom"></div>
+<div class="gold-border border-left"></div>
+<div class="gold-border border-right"></div>
+
+<div class="admin-container">
+    <h1 class="admin-header">УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ</h1>
+
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+    <a href="{{ url_for('main.add_user') }}" class="admin-btn">
+        ✨ ДОБАВИТЬ НОВОГО ПОЛЬЗОВАТЕЛЯ ✨
+    </a>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Администратор</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>
+                    <span class="admin-badge {% if user.is_admin %}admin-badge-yes{% else %}admin-badge-no{% endif %}">
+                        {% if user.is_admin %}ДА{% else %}НЕТ{% endif %}
+                    </span>
+                </td>
+                <td class="admin-actions">
+                    <a href="{{ url_for('main.edit_user', user_id=user.id) }}" class="admin-edit-btn">Редактировать</a>
+                    <form action="{{ url_for('main.edit_user', user_id=user.id) }}" method="post">
+                        <input type="hidden" name="delete" value="1">
+                        <button type="submit" class="admin-delete-btn" onclick="return confirm('Вы уверены?')">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+    
+    <div class="admin-footer">
+        Золотая административная панель &copy; {{ current_year }} | Власть и роскошь
+    </div>
+</div>
+{% endblock %}

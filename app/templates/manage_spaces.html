@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+
+<a href="{{ url_for('main.admin_index') }}" class="back-to-site">← Назад</a>
+
+<div class="gold-border border-top"></div>
+<div class="gold-border border-bottom"></div>
+<div class="gold-border border-left"></div>
+<div class="gold-border border-right"></div>
+
+<div class="admin-container">
+    <h1 class="admin-header">УПРАВЛЕНИЕ ПРОСТРАНСТВАМИ</h1>
+
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+    <a href="{{ url_for('main.add_space') }}" class="admin-btn">
+        ✨ ДОБАВИТЬ НОВОЕ ПРОСТРАНСТВО ✨
+    </a>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Местоположение</th>
+                <th>Вместимость</th>
+                <th>Тип</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for space in spaces %}
+            <tr>
+                <td>{{ space.id }}</td>
+                <td>{{ space.title }}</td>
+                <td>{{ space.location }}</td>
+                <td>{{ space.capacity }}</td>
+                <td>{{ space.type }}</td>
+                <td class="admin-actions">
+                    <a href="{{ url_for('main.edit_space', space_id=space.id) }}" class="admin-edit-btn">Редактировать</a>
+                    <form action="{{ url_for('main.edit_space', space_id=space.id) }}" method="post">
+                        <input type="hidden" name="delete" value="1">
+                        <button type="submit" class="admin-delete-btn" onclick="return confirm('Вы уверены?')">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+    <div class="admin-footer">
+        Золотая административная панель &copy; {{ current_year }} | Пространства и возможности
+    </div>
+</div>
+{% endblock %}

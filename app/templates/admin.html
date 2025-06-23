@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цыганская Золотая Админка</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+</head>
+<body>
+    <a href="{{ url_for('main.index') }}" class="back-to-site">← На главную</a>
+
+    <div class="gold-border border-top"></div>
+    <div class="gold-border border-bottom"></div>
+    <div class="gold-border border-left"></div>
+    <div class="gold-border border-right"></div>
+
+    <div class="admin-container">
+        <h1 class="admin-header">👑 ЗОЛОТАЯ АДМИНКА 👑</h1>
+
+        <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+        <div class="admin-welcome">
+            <p>Добро пожаловать в панель управления, вашему величеству!</p>
+            <p>Выберите раздел для управления:</p>
+        </div>
+
+        <div class="admin-menu">
+            <a href="{{ url_for('main.manage_users') }}" class="admin-btn">
+                👥 Управление пользователями
+            </a>
+
+            <a href="{{ url_for('main.manage_spaces') }}" class="admin-btn">
+                🏛️ Управление пространствами
+            </a>
+
+            <a href="{{ url_for('main.manage_bookings') }}" class="admin-btn">
+                📅 Управление бронированиями
+            </a>
+        </div>
+
+        <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+        <div class="admin-footer">
+            Золотая административная панель &copy; {{ current_year }} | Все права защищены
+        </div>
+    </div>
+</body>
+</html>

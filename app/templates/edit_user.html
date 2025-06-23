@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+
+<a href="{{ url_for('main.manage_users') }}" class="back-to-site">← Назад</a>
+
+<div class="gold-border border-top"></div>
+<div class="gold-border border-bottom"></div>
+<div class="gold-border border-left"></div>
+<div class="gold-border border-right"></div>
+
+<div class="admin-container">
+    <h1 class="admin-header">{{'РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ' if user else 'ДОБАВЛЕНИЕ НОВОГО ПОЛЬЗОВАТЕЛЯ'}}</h1>
+
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+    <form method="post" class="admin-form">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required
+                   value="{{ user.email if user else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="first_name">Имя:</label>
+            <input type="text" id="first_name" name="first_name" required
+                   value="{{ user.first_name if user else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">Фамилия:</label>
+            <input type="text" id="last_name" name="last_name" required
+                   value="{{ user.last_name if user else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="password">{{ 'Новый пароль' if user else 'Пароль' }}:</label>
+            <input type="password" id="password" name="password" {% if not user %}required{% endif %}>
+            {% if user %}
+                <div class="form-hint">Оставьте поле пустым, если не хотите менять пароль</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="admin-btn">Сохранить</button>
+    </form>
+
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+    <div class="admin-footer">
+        Золотая административная панель &copy; {{ current_year }} | Управление пользователями
+    </div>
+</div>
+{% endblock %}

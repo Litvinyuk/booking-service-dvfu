@@ -1,0 +1,520 @@
+/* static/css/admin_styles.css */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg,
+        #FFD700 0%,
+        #D4AF37 25%,
+        #FFDF00 50%,
+        #FDB927 75%,
+        #CFB53B 100%);
+    color: #8B0000;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    background-attachment: fixed;
+    background-size: cover;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.3) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(207, 181, 59, 0.3) 0%, transparent 40%),
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%238B0000' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    z-index: -1;
+}
+
+.admin-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.85);
+    border: 4px solid #8B0000;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(139, 0, 0, 0.7);
+    padding: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px dashed #FFD700;
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.admin-header {
+    text-align: center;
+    color: #8B0000;
+    font-size: 2.8em;
+    text-shadow: 2px 2px 4px rgba(255, 215, 0, 0.8);
+    margin-top: 0;
+    padding-bottom: 15px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    position: relative;
+    text-transform: uppercase;
+    border-bottom: 3px double #8B0000;
+}
+
+
+.admin-btn {
+    display: block;
+    width: 350px;
+    margin: 30px auto;
+    padding: 18px;
+    background: linear-gradient(to right, #8B0000, #4B0082);
+    color: #FFD700;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3em;
+    text-decoration: none;
+    border-radius: 50px;
+    border: 3px solid #FFD700;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.admin-btn::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(45deg,
+        #FFD700, #FF8C00, #FFD700, #FF8C00);
+    background-size: 400%;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s;
+    border-radius: 50px;
+}
+
+.admin-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 25px rgba(139, 0, 0, 0.8);
+}
+
+.admin-btn:hover::before {
+    opacity: 0.8;
+    animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+    0% { background-position: 0 0; }
+    100% { background-position: 400% 0; }
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 35px 0;
+    background: rgba(255, 255, 255, 0.9);
+    border: 3px solid #8B0000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(139, 0, 0, 0.5);
+}
+
+.admin-table th {
+    background: linear-gradient(to bottom, #8B0000, #4B0082);
+    color: #FFD700;
+    padding: 18px;
+    text-align: left;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 3px solid #FFD700;
+    position: relative;
+}
+
+.admin-table th::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #FFD700, transparent);
+}
+
+.admin-table td {
+    padding: 15px 18px;
+    border-bottom: 2px solid rgba(139, 0, 0, 0.2);
+    color: #4B0082;
+    font-weight: 500;
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tr:nth-child(even) {
+    background: rgba(255, 215, 0, 0.15);
+}
+
+.admin-table tr:hover {
+    background: rgba(139, 0, 0, 0.1);
+}
+
+.admin-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-edit-btn,
+.admin-delete-btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    min-width: 140px;
+    text-align: center;
+    font-size: 1.1em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.admin-edit-btn {
+    background: linear-gradient(to bottom, #32CD32, #006400);
+    color: white;
+}
+
+.admin-delete-btn {
+    background: linear-gradient(to bottom, #FF4500, #8B0000);
+    color: white;
+    border: none;
+}
+
+.admin-edit-btn:hover {
+    background: linear-gradient(to bottom, #006400, #32CD32);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    border-color: #FFD700;
+}
+
+.admin-delete-btn:hover {
+    background: linear-gradient(to bottom, #8B0000, #FF4500);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.admin-badge {
+    display: inline-block;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1em;
+    min-width: 70px;
+    text-align: center;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.admin-badge-yes {
+    background: linear-gradient(to right, #32CD32, #006400);
+    color: white;
+    border: 2px solid #32CD32;
+}
+
+.admin-badge-no {
+    background: linear-gradient(to right, #FF4500, #8B0000);
+    color: white;
+    border: 2px solid #FF4500;
+}
+
+.admin-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 3px double #8B0000;
+    font-style: italic;
+    color: #8B0000;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.admin-decoration {
+    text-align: center;
+    margin: 30px 0;
+    font-size: 2.5em;
+    letter-spacing: 8px;
+    color: #8B0000;
+    text-shadow: 2px 2px 4px rgba(255, 215, 0, 0.8);
+}
+
+.gold-border {
+    position: absolute;
+    background: linear-gradient(45deg, #FFD700, #D4AF37, #FFD700);
+    box-shadow: 0 0 15px #FFD700;
+}
+
+.border-top {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+}
+
+.border-bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+}
+
+.border-left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 8px;
+}
+
+.border-right {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 8px;
+}
+
+/* Добавляем новые стили в конец файла */
+header {
+    display: none !important;
+}
+
+.back-to-site {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    padding: 10px 20px;
+    background: linear-gradient(to right, #8B0000, #4B0082);
+    color: #FFD700;
+    border-radius: 50px;
+    border: 2px solid #FFD700;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s;
+}
+
+.back-to-site:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(139, 0, 0, 0.8);
+    background: linear-gradient(to right, #4B0082, #8B0000);
+}
+
+/* Оптимизация для кнопок действий */
+.admin-actions form {
+    display: inline-block;
+    margin: 0;
+}
+
+/* Улучшение адаптивности */
+@media (max-width: 768px) {
+    .admin-container {
+        padding: 15px;
+    }
+
+    .admin-btn {
+        width: 90%;
+        font-size: 1.1em;
+        padding: 15px;
+    }
+
+    .admin-table {
+        font-size: 0.9em;
+    }
+
+    .admin-edit-btn,
+    .admin-delete-btn {
+        padding: 8px 15px;
+        min-width: auto;
+        font-size: 0.9em;
+    }
+}
+
+/* Добавьте это в конец вашего CSS файла */
+.admin-form-container {
+    background: rgba(255, 255, 255, 0.85);
+    border: 3px solid #8B0000;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 800px;
+}
+
+.form-row {
+    margin-bottom: 20px;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 8px;
+    color: #8B0000;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #8B0000;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1em;
+    color: #4B0082;
+    transition: all 0.3s;
+}
+
+.form-row textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-row input[type="text"]:focus,
+.form-row input[type="number"]:focus,
+.form-row textarea:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    outline: none;
+}
+
+/* Стили для формы */
+.admin-form-container {
+    background: rgba(255, 255, 255, 0.85);
+    border: 3px solid #8B0000;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+}
+
+.form-row {
+    margin-bottom: 25px;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 8px;
+    color: #8B0000;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.3);
+}
+
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row input[type="date"],
+.form-row input[type="time"],
+.form-row select,
+.form-row textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #8B0000;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    font-size: 1em;
+    color: #4B0082;
+    transition: all 0.3s;
+}
+
+.form-row select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238B0000'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+}
+
+.form-row input[type="text"]:focus,
+.form-row input[type="number"]:focus,
+.form-row input[type="date"]:focus,
+.form-row input[type="time"]:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    outline: none;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .admin-form-container {
+        padding: 15px;
+    }
+
+    .form-row {
+        margin-bottom: 20px;
+    }
+}
+
+/* Стили для главной страницы админки */
+.admin-welcome {
+    text-align: center;
+    margin: 30px 0;
+    color: #8B0000;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.3);
+}
+
+.admin-welcome p {
+    margin: 15px 0;
+}
+
+.admin-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 40px 0;
+}
+
+.admin-btn {
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .admin-menu {
+        gap: 15px;
+    }
+
+    .admin-btn {
+        width: 90%;
+        padding: 15px;
+        font-size: 1.1em;
+    }
+
+    .admin-welcome {
+        font-size: 1.1em;
+        margin: 20px 0;
+    }
+}
+

@@ -1,46 +1,231 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-import sqlite3
-from app.models.database import get_connection
-from datetime import datetime
+from app import db_api
+from functools import wraps
 
 main_bp = Blueprint('main', __name__)
 
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not session.get('is_admin'):
+            flash('Доступ запрещен. Требуются права администратора', 'error')
+            return redirect(url_for('main.index'))
+        return f(*args, **kwargs)
+    return wrapper
+
 def login_required(f):
+    @wraps(f)
     def wrapper(*args, **kwargs):
         if 'user_id' not in session:
             return redirect(url_for('main.login'))
         return f(*args, **kwargs)
-    wrapper.__name__ = f.__name__
     return wrapper
-
-# Функция для получения всех пространств из БД
-def get_all_spaces():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM spaces')
-    spaces = cursor.fetchall()
-    conn.close()
-
-    # Преобразуем в список словарей для удобства
-    spaces_list = []
-    for space in spaces:
-        spaces_list.append({
-            'id': space[0],
-            'title': space[1],
-            'location': space[2],
-            'capacity': space[3],
-            'image': space[4],
-            'type': space[5],
-            'description': space[6]
-        })
-    return spaces_list
-
 
 @main_bp.route('/')
 def index():
     return render_template('index.html')
 
+@main_bp.route('/admin')
+@admin_required
+def admin_index():
+    return render_template('admin.html')
 
+# --- Пользователи ---
+@main_bp.route('/admin/users')
+@admin_required
+def manage_users():
+    users = db_api.get_all_users()
+    return render_template('manage_users.html', users=users)
+
+
+@main_bp.route('/admin/users/add', methods=['GET', 'POST'])
+@admin_required
+def add_user():
+    if request.method == 'POST':
+        data = request.form
+        is_admin = 'is_admin' in data and data['is_admin'] == 'on'
+
+        # Пароль будет автоматически захэширован в create_user
+        db_api.create_user(
+            email=data['email'],
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            password=data['password'],
+            is_admin=is_admin
+        )
+        flash('Пользователь добавлен', 'success')
+        return redirect(url_for('main.manage_users'))
+    return render_template('edit_user.html', user=None)
+
+
+@main_bp.route('/admin/users/edit/<int:user_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_user(user_id):
+    # Получаем данные пользователя из базы данных
+    user = db_api.get_user_by_id(user_id)
+
+    # Если пользователь не найден - показываем ошибку
+    if not user:
+        flash('Пользователь не найден', 'error')
+        return redirect(url_for('main.manage_users'))
+
+    # Обработка отправки формы
+    if request.method == 'POST':
+        # Получаем данные из формы
+        data = request.form
+        email = data['email']
+        first_name = data['first_name']
+        last_name = data['last_name']
+
+        # Определяем, является ли пользователь администратором
+        is_admin = 'is_admin' in data and data['is_admin'] == 'on'
+
+        try:
+            # Обновляем основную информацию о пользователе
+            db_api.update_user_info(
+                user_id,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                is_admin=is_admin
+            )
+
+            # Если указан новый пароль - обновляем его
+            if data['password']:
+                db_api.update_user_password(user_id, data['password'])
+                flash('Пароль успешно обновлён', 'success')
+
+            flash('Данные пользователя обновлены', 'success')
+            return redirect(url_for('main.manage_users'))
+
+        except Exception as e:
+            flash(f'Ошибка при обновлении пользователя: {str(e)}', 'error')
+
+    # Для GET-запроса просто показываем форму редактирования
+    return render_template('edit_user.html', user=user)
+
+
+# --- Пространства ---
+@main_bp.route('/admin/spaces')
+@admin_required
+def manage_spaces():
+    spaces = db_api.get_all_spaces()
+    return render_template('manage_spaces.html', spaces=spaces)
+
+@main_bp.route('/admin/spaces/add', methods=['GET', 'POST'])
+@admin_required
+def add_space():
+    if request.method == 'POST':
+        data = request.form
+        db_api.create_space(
+            title=data['title'],
+            location=data['location'],
+            capacity=int(data['capacity']),
+            image=data['image'],
+            type=data['type'],
+            description=data['description']
+        )
+        flash('Пространство добавлено', 'success')
+        return redirect(url_for('main.manage_spaces'))
+    return render_template('edit_space.html', space=None)
+
+@main_bp.route('/admin/spaces/<int:space_id>/edit', methods=['GET', 'POST'])
+@admin_required
+def edit_space(space_id):
+    space = db_api.get_space_by_id(space_id)
+    if not space:
+        flash('Пространство не найдено', 'error')
+        return redirect(url_for('main.manage_spaces'))
+
+    if request.method == 'POST':
+        data = request.form
+        if 'delete' in data:
+            db_api.delete_space(space_id)
+            flash('Пространство удалено', 'success')
+            return redirect(url_for('main.manage_spaces'))
+
+        db_api.update_space(
+            space_id,
+            title=data['title'],
+            location=data['location'],
+            capacity=int(data['capacity']),
+            image=data['image'],
+            type=data['type'],
+            description=data['description']
+        )
+        flash('Данные пространства обновлены', 'success')
+        return redirect(url_for('main.manage_spaces'))
+
+    return render_template('edit_space.html', space=space)
+
+# --- Бронирования ---
+@main_bp.route('/admin/bookings')
+@admin_required
+def manage_bookings():
+    bookings = db_api.get_all_bookings()
+    return render_template('manage_bookings.html', bookings=bookings)
+
+@main_bp.route('/admin/bookings/<int:booking_id>/edit', methods=['GET', 'POST'])
+@admin_required
+def edit_booking(booking_id):
+    booking = db_api.get_booking_by_id(booking_id)
+    if not booking:
+        flash('Бронирование не найдено', 'error')
+        return redirect(url_for('main.manage_bookings'))
+
+    if request.method == 'POST':
+        data = request.form
+        if 'delete' in data:
+            db_api.delete_booking(booking_id)
+            flash('Бронирование удалено', 'success')
+            return redirect(url_for('main.manage_bookings'))
+
+        # Иначе — обновление
+        db_api.update_booking(
+            booking_id,
+            user_id=data['user_id'],
+            space_id=data['space_id'],
+            booking_date=data['booking_date'],
+            start_time=data['start_time'],
+            end_time=data['end_time']
+        )
+        flash('Бронирование обновлено', 'success')
+        return redirect(url_for('main.manage_bookings'))
+
+    users = db_api.get_all_users()
+    spaces = db_api.get_all_spaces()
+    return render_template('edit_booking.html', booking=booking, users=users, spaces=spaces)
+
+@main_bp.route('/admin/bookings/add', methods=['GET', 'POST'])
+@admin_required
+def add_booking():
+    if request.method == 'POST':
+        data = request.form
+        user_id = data['user_id']
+        space_id = data['space_id']
+        booking_date = data['booking_date']
+        start_time = data['start_time']
+        end_time = data['end_time']
+
+        # Можно добавить проверку конфликтов, если есть функция в db_api
+        if hasattr(db_api, 'has_booking_conflict'):
+            if db_api.has_booking_conflict(space_id, booking_date, start_time, end_time):
+                flash('В это время уже есть бронирование. Выберите другое время.', 'error')
+                users = db_api.get_all_users()
+                spaces = db_api.get_all_spaces()
+                return render_template('edit_booking.html', booking=None, users=users, spaces=spaces)
+
+        db_api.create_booking(space_id, user_id, booking_date, start_time, end_time)
+        flash('Бронирование добавлено', 'success')
+        return redirect(url_for('main.manage_bookings'))
+
+    # GET запрос — просто отдаем форму с пользователями и пространствами
+    users = db_api.get_all_users()
+    spaces = db_api.get_all_spaces()
+    return render_template('edit_booking.html', booking=None, users=users, spaces=spaces)
+
+
+# --- Регистрация, вход, профиль ---
 @main_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -48,26 +233,18 @@ def register():
         first_name = request.form['firstname']
         last_name = request.form['surname']
         password = request.form['password']
-        user_role = request.form['user_role']
 
-        conn = get_connection()
-        cursor = conn.cursor()
+        # По умолчанию все новые пользователи - не администраторы
+        is_admin = False
 
         try:
-            cursor.execute('''
-                INSERT INTO users (email, first_name, last_name, password, user_role)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (email, first_name, last_name, password, user_role))
-            conn.commit()
+            db_api.create_user(email, first_name, last_name, password, is_admin)
             flash('Регистрация успешна! Теперь войдите.', 'success')
             return redirect(url_for('main.login'))
-        except sqlite3.IntegrityError:
-            flash('Email уже занят', 'error')
-        finally:
-            conn.close()
+        except Exception as e:
+            flash('Ошибка при регистрации: ' + str(e), 'error')
 
     return render_template('register.html')
-
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -75,144 +252,87 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        conn = get_connection()
-        cursor = conn.cursor()
+        user = db_api.get_user_by_email(email)
 
-        try:
-            cursor.execute('SELECT id, password FROM users WHERE email = ?', (email,))
-            user = cursor.fetchone()
+        if not user:
+            flash('Пользователь не найден', 'error')
+            return redirect(url_for('main.login'))
 
-            if not user:
-                flash('Пользователь не найден', 'error')
-                return redirect(url_for('main.login'))
-
-            if user[1] == password:
-                session['user_id'] = user[0]
-                return redirect(url_for('main.profile'))
-            else:
-                flash('Неверный пароль', 'error')
-                return redirect(url_for('main.login'))
-
-        finally:
-            conn.close()
+        # Проверяем пароль
+        if db_api.verify_password(user['password'], password):
+            session['user_id'] = user['id']
+            session['is_admin'] = user['is_admin']
+            session['username'] = user.get('first_name')
+            return redirect(url_for('main.profile'))
+        else:
+            flash('Неверный пароль', 'error')
 
     return render_template('login.html')
 
 @main_bp.route('/logout')
 def logout():
-    session.pop('user_id', None)  # Удаляем сессию
+    session.clear()
     flash('Вы вышли из системы', 'info')
     return redirect(url_for('main.index'))
 
 
-
-@main_bp.route('/profile')
 @login_required
+@main_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
-    conn = get_connection()
-    cursor = conn.cursor()
+    user_id = session['user_id']
+    user = db_api.get_user_by_id(user_id)
 
-    # Информация о пользователе
-    cursor.execute('SELECT id, email, first_name, last_name, user_role FROM users WHERE id = ?', (session['user_id'],))
-    user_data = cursor.fetchone()
+    if request.method == 'POST':
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
 
-    # Бронирования пользователя
-    cursor.execute('''
-        SELECT b.booking_date, b.start_time, b.end_time, s.space_title, s.space_location
-        FROM bookings b
-        JOIN spaces s ON b.space_id = s.id
-        WHERE b.user_id = ?
-        ORDER BY b.booking_date, b.start_time
-    ''', (session['user_id'],))
-    bookings = cursor.fetchall()
+        if new_password:
+            # Проверяем текущий пароль
+            if db_api.verify_password(user['password'], current_password):
+                # Обновляем пароль (автоматически хешируется)
+                db_api.update_user_password(user_id, new_password)
+                flash('Пароль успешно изменён', 'success')
+            else:
+                flash('Текущий пароль неверен', 'error')
 
-    conn.close()
+        # Обновляем данные пользователя
+        user = db_api.get_user_by_id(user_id)
 
-    if user_data:
-        user = {
-            'id': user_data[0],
-            'email': user_data[1],
-            'first_name': user_data[2],
-            'last_name': user_data[3],
-            'role': user_data[4]
-        }
-        return render_template('profile.html', user=user, bookings=bookings)
-
-    return redirect(url_for('main.login'))
-
-
-
+    bookings = db_api.get_user_bookings(user_id)
+    return render_template('profile.html', user=user, bookings=bookings)
+# --- Каталог и бронирование ---
 @main_bp.route('/catalog')
 def catalog():
-    spaces = get_all_spaces()
+    spaces = db_api.get_all_spaces()
     return render_template('catalog.html', spaces=spaces)
 
-from datetime import datetime
+
 
 @main_bp.route('/booking/<int:space_id>', methods=['GET', 'POST'])
-@login_required
 def booking(space_id):
-    conn = get_connection()
-    cursor = conn.cursor()
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Пожалуйста, авторизуйтесь для бронирования', 'error')
+        return redirect(url_for('main.login'))
 
     if request.method == 'POST':
         date = request.form['date']
         start_time = request.form['start_time']
         end_time = request.form['end_time']
-        user_id = session['user_id']
 
-        # Проверка конфликта по времени
-        cursor.execute('''
-            SELECT * FROM bookings
-            WHERE space_id = ? AND booking_date = ?
-            AND (
-                (start_time < ? AND end_time > ?) OR
-                (start_time >= ? AND start_time < ?)
-            )
-        ''', (space_id, date, end_time, start_time, start_time, end_time))
-
-        conflict = cursor.fetchone()
-        if conflict:
-            flash('Это время уже занято. Пожалуйста, выберите другое.', 'error')
+        # Проверка конфликтов и создание бронирования
+        if db_api.has_booking_conflict(space_id, date, start_time, end_time):
+            flash('В это время уже есть бронирование', 'error')
         else:
-            cursor.execute('''
-                INSERT INTO bookings (space_id, user_id, booking_date, start_time, end_time)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (space_id, user_id, date, start_time, end_time))
-            conn.commit()
-            flash('Бронирование успешно оформлено!', 'success')
+            db_api.create_booking(user_id, space_id, date, start_time, end_time)
+            flash('Бронирование успешно создано', 'success')
             return redirect(url_for('main.booking', space_id=space_id))
 
-    # Получение информации о пространстве
-    cursor.execute('SELECT * FROM spaces WHERE id = ?', (space_id,))
-    space_data = cursor.fetchone()
+    # Остальной код для GET-запроса
+    space = db_api.get_space_by_id(space_id)
+    bookings = db_api.get_upcoming_bookings(space_id)
 
-    if not space_data:
-        flash('Пространство не найдено', 'error')
-        return redirect(url_for('main.catalog'))
+    # Форматирование занятых слотов для шаблона
+    booked_slots = [(b['booking_date'], b['start_time'], b['end_time']) for b in bookings]
 
-    space = {
-        'id': space_data[0],
-        'title': space_data[1],
-        'location': space_data[2],
-        'capacity': space_data[3],
-        'image': space_data[4],
-        'type': space_data[5],
-        'description': space_data[6],
-    }
-
-    # Получение всех броней на ближайшие 7 дней
-    cursor.execute('''
-        SELECT booking_date, start_time, end_time FROM bookings
-        WHERE space_id = ? AND booking_date >= date('now')
-        ORDER BY booking_date, start_time
-    ''', (space_id,))
-    bookings = cursor.fetchall()
-    conn.close()
-
-    return render_template('booking.html', space=space, bookings=bookings)
-
-
-@main_bp.route('/space')
-def space():
-    return render_template('space.html')
+    return render_template('booking.html', space=space, bookings=booked_slots)

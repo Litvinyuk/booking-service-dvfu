@@ -13,9 +13,20 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Таблица пространств
     cursor.execute('''
-            CREATE TABLE IF NOT EXISTS spaces (
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            first_name TEXT NOT NULL,
+            last_name TEXT NOT NULL,
+            password TEXT NOT NULL,
+            is_admin BOOLEAN DEFAULT 0
+        )
+    ''')
+
+    # Остальные таблицы остаются без изменений
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS spaces (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             space_title TEXT NOT NULL,
             space_location TEXT,
@@ -26,9 +37,8 @@ def init_db():
         )
     ''')
 
-    # Таблица бронирований
     cursor.execute('''
-            CREATE TABLE IF NOT EXISTS bookings (
+        CREATE TABLE IF NOT EXISTS bookings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             space_id INTEGER,
@@ -37,19 +47,6 @@ def init_db():
             end_time TEXT NOT NULL,
             FOREIGN KEY(user_id) REFERENCES users(id),
             FOREIGN KEY(space_id) REFERENCES spaces(id)
-        )
-    ''')
-
-    # Таблица пользователей
-    cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
-            password TEXT NOT NULL,
-            user_role TEXT NOT NULL CHECK (user_role IN ('student', 'teacher')),
-            is_admin BOOLEAN
         )
     ''')
 

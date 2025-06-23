@@ -1,14 +1,23 @@
 from app.models.database import get_connection
 from datetime import datetime
+import hashlib
+import binascii
+
+def hash_password(password):
+    salt = "fixed_salt"
+    return hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000).hex()
+
+def verify_password(hashed_password, input_password):
+    return hashed_password == hash_password(input_password)
 
 # --- USERS ---
 def get_all_users():
     conn = get_connection()
     cur = conn.cursor()
-    rows = cur.execute("SELECT id, email, first_name, last_name, user_role FROM users").fetchall()
+    rows = cur.execute("SELECT id, email, first_name, last_name, is_admin FROM users").fetchall()
     conn.close()
     return [
-        {'id': r[0], 'email': r[1], 'first_name': r[2], 'last_name': r[3], 'role': r[4]}
+        {'id': r[0], 'email': r[1], 'first_name': r[2], 'last_name': r[3], 'is_admin': bool(r[4])}
         for r in rows
     ]
 
@@ -16,30 +25,41 @@ def get_user_by_id(user_id):
     conn = get_connection()
     cur = conn.cursor()
     row = cur.execute(
-        "SELECT id, email, first_name, last_name, user_role FROM users WHERE id = ?",
+        "SELECT id, email, first_name, last_name, password, is_admin FROM users WHERE id = ?",
         (user_id,)
     ).fetchone()
     conn.close()
     if row:
-        return {'id': row[0], 'email': row[1], 'first_name': row[2], 'last_name': row[3], 'role': row[4]}
+        return {
+            'id': row[0],
+            'email': row[1],
+            'first_name': row[2],
+            'last_name': row[3],
+            'password': row[4],
+            'is_admin': bool(row[5])
+        }
     return None
 
-def create_user(email, first_name, last_name, password, role):
+
+def create_user(email, first_name, last_name, password, is_admin=False):
+    hashed_pw = hash_password(password)
     conn = get_connection()
     cur = conn.cursor()
+
     cur.execute(
-        "INSERT INTO users (email, first_name, last_name, password, user_role) VALUES (?, ?, ?, ?, ?)",
-        (email, first_name, last_name, password, role)
+        "INSERT INTO users (email, first_name, last_name, password, is_admin) VALUES (?, ?, ?, ?, ?)",
+        (email, first_name, last_name, hashed_pw, int(is_admin))
     )
+
     conn.commit()
     conn.close()
 
-def update_user_info(user_id, email, first_name, last_name, role):
+def update_user_info(user_id, email, first_name, last_name, is_admin):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        "UPDATE users SET email = ?, first_name = ?, last_name = ?, user_role = ? WHERE id = ?",
-        (email, first_name, last_name, role, user_id)
+        "UPDATE users SET email = ?, first_name = ?, last_name = ?, is_admin = ? WHERE id = ?",
+        (email, first_name, last_name, int(is_admin), user_id)
     )
     conn.commit()
     conn.close()
@@ -53,6 +73,25 @@ def update_user_password(user_id, new_password):
     )
     conn.commit()
     conn.close()
+
+def get_user_by_email(email):
+    conn = get_connection()
+    cur = conn.cursor()
+    row = cur.execute(
+        "SELECT id, email, first_name, last_name, password, is_admin FROM users WHERE email = ?",
+        (email,)
+    ).fetchone()
+    conn.close()
+    if row:
+        return {
+            'id': row[0],
+            'email': row[1],
+            'first_name': row[2],
+            'last_name': row[3],
+            'password': row[4],
+            'is_admin': bool(row[5])
+        }
+    return None
 
 def delete_user(user_id):
     conn = get_connection()

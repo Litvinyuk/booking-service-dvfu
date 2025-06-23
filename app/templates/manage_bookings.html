@@ -1,37 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Управление бронированиями</h2>
-<a href="{{ url_for('main.add_booking') }}">Добавить новое бронирование</a>
-<table border="1" cellpadding="8" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Пользователь</th>
-            <th>Пространство</th>
-            <th>Дата</th>
-            <th>Начало</th>
-            <th>Конец</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for booking in bookings %}
-        <tr>
-            <td>{{ booking.id }}</td>
-            <td>{{ booking.user_name }}</td>
-            <td>{{ booking.space_title }}</td>
-            <td>{{ booking.booking_date }}</td>
-            <td>{{ booking.start_time }}</td>
-            <td>{{ booking.end_time }}</td>
-            <td>
-                <a href="{{ url_for('main.edit_booking', booking_id=booking.id) }}">Редактировать</a> |
-                <form action="{{ url_for('main.edit_booking', booking_id=booking.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Удалить бронирование?');">
-                    <input type="hidden" name="delete" value="1">
-                    <button type="submit" style="background:none; border:none; color:red; cursor:pointer; padding:0;">Удалить</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+
+<a href="{{ url_for('main.admin_index') }}" class="back-to-site">← Назад</a>
+
+<div class="gold-border border-top"></div>
+<div class="gold-border border-bottom"></div>
+<div class="gold-border border-left"></div>
+<div class="gold-border border-right"></div>
+
+<div class="admin-container">
+    <h1 class="admin-header">УПРАВЛЕНИЕ БРОНИРОВАНИЯМИ</h1>
+
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+    <a href="{{ url_for('main.add_booking') }}" class="admin-btn">
+        ✨ ДОБАВИТЬ НОВОЕ БРОНИРОВАНИЕ ✨
+    </a>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Пользователь</th>
+                <th>Пространство</th>
+                <th>Дата</th>
+                <th>Начало</th>
+                <th>Конец</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.user_name }}</td>
+                <td>{{ booking.space_title }}</td>
+                <td>{{ booking.booking_date }}</td>
+                <td>{{ booking.start_time }}</td>
+                <td>{{ booking.end_time }}</td>
+                <td class="admin-actions">
+                    <a href="{{ url_for('main.edit_booking', booking_id=booking.id) }}" class="admin-edit-btn">Редактировать</a>
+                    <form action="{{ url_for('main.edit_booking', booking_id=booking.id) }}" method="post">
+                        <input type="hidden" name="delete" value="1">
+                        <button type="submit" class="admin-delete-btn" onclick="return confirm('Удалить бронирование?')">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+    <div class="admin-footer">
+        Золотая административная панель &copy; {{ current_year }} | Бронирование пространств
+    </div>
+</div>
 {% endblock %}

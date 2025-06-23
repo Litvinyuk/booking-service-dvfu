@@ -1,20 +1,24 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from app import db_api  # модуль для работы с БД
+from app import db_api
+from functools import wraps
 
 main_bp = Blueprint('main', __name__)
 
 def admin_required(f):
+    @wraps(f)
     def wrapper(*args, **kwargs):
+        if not session.get('is_admin'):
+            flash('Доступ запрещен. Требуются права администратора', 'error')
+            return redirect(url_for('main.index'))
         return f(*args, **kwargs)
-    wrapper.__name__ = f.__name__
     return wrapper
 
 def login_required(f):
+    @wraps(f)
     def wrapper(*args, **kwargs):
         if 'user_id' not in session:
             return redirect(url_for('main.login'))
         return f(*args, **kwargs)
-    wrapper.__name__ = f.__name__
     return wrapper
 
 @main_bp.route('/')
@@ -33,17 +37,21 @@ def manage_users():
     users = db_api.get_all_users()
     return render_template('manage_users.html', users=users)
 
+
 @main_bp.route('/admin/users/add', methods=['GET', 'POST'])
 @admin_required
 def add_user():
     if request.method == 'POST':
         data = request.form
+        is_admin = 'is_admin' in data and data['is_admin'] == 'on'
+
+        # Пароль будет автоматически захэширован в create_user
         db_api.create_user(
             email=data['email'],
             first_name=data['first_name'],
             last_name=data['last_name'],
             password=data['password'],
-            role='user'
+            is_admin=is_admin
         )
         flash('Пользователь добавлен', 'success')
         return redirect(url_for('main.manage_users'))
@@ -53,27 +61,47 @@ def add_user():
 @main_bp.route('/admin/users/edit/<int:user_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_user(user_id):
+    # Получаем данные пользователя из базы данных
     user = db_api.get_user_by_id(user_id)
+
+    # Если пользователь не найден - показываем ошибку
     if not user:
         flash('Пользователь не найден', 'error')
         return redirect(url_for('main.manage_users'))
 
+    # Обработка отправки формы
     if request.method == 'POST':
+        # Получаем данные из формы
         data = request.form
-        db_api.update_user_info(
-            user_id,
-            email=data['email'],
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            role='user'
-        )
+        email = data['email']
+        first_name = data['first_name']
+        last_name = data['last_name']
 
-        if data['password']:
-            db_api.update_user_password(user_id, data['password'])
+        # Определяем, является ли пользователь администратором
+        is_admin = 'is_admin' in data and data['is_admin'] == 'on'
 
-        flash('Пользователь обновлён', 'success')
-        return redirect(url_for('main.manage_users'))
+        try:
+            # Обновляем основную информацию о пользователе
+            db_api.update_user_info(
+                user_id,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                is_admin=is_admin
+            )
 
+            # Если указан новый пароль - обновляем его
+            if data['password']:
+                db_api.update_user_password(user_id, data['password'])
+                flash('Пароль успешно обновлён', 'success')
+
+            flash('Данные пользователя обновлены', 'success')
+            return redirect(url_for('main.manage_users'))
+
+        except Exception as e:
+            flash(f'Ошибка при обновлении пользователя: {str(e)}', 'error')
+
+    # Для GET-запроса просто показываем форму редактирования
     return render_template('edit_user.html', user=user)
 
 
@@ -205,10 +233,12 @@ def register():
         first_name = request.form['firstname']
         last_name = request.form['surname']
         password = request.form['password']
-        user_role = request.form['user_role']
+
+        # По умолчанию все новые пользователи - не администраторы
+        is_admin = False
 
         try:
-            db_api.create_user(email, first_name, last_name, password, user_role)
+            db_api.create_user(email, first_name, last_name, password, is_admin)
             flash('Регистрация успешна! Теперь войдите.', 'success')
             return redirect(url_for('main.login'))
         except Exception as e:
@@ -228,11 +258,10 @@ def login():
             flash('Пользователь не найден', 'error')
             return redirect(url_for('main.login'))
 
-        # user возвращается обычно как dict, а не tuple — поправь, если в твоём db_api иначе
-        # Предполагаем что у user ключ 'password'
-        if user.get('password') == password:
+        # Проверяем пароль
+        if db_api.verify_password(user['password'], password):
             session['user_id'] = user['id']
-            session['is_admin'] = (user.get('role') == 'admin')
+            session['is_admin'] = user['is_admin']
             session['username'] = user.get('first_name')
             return redirect(url_for('main.profile'))
         else:
@@ -246,17 +275,31 @@ def logout():
     flash('Вы вышли из системы', 'info')
     return redirect(url_for('main.index'))
 
-@login_required
-@main_bp.route('/profile')
-def profile():
-    user = db_api.get_user_by_id(session['user_id'])
-    # Добавим функцию get_user_bookings в db_api или используем get_all_bookings + фильтр
-    # Для простоты, если db_api не имеет get_user_bookings, заменим на:
-    bookings = [b for b in db_api.get_all_bookings() if b['user_id'] == session['user_id']]
-    if user:
-        return render_template('profile.html', user=user, bookings=bookings)
-    return redirect(url_for('main.login'))
 
+@login_required
+@main_bp.route('/profile', methods=['GET', 'POST'])
+def profile():
+    user_id = session['user_id']
+    user = db_api.get_user_by_id(user_id)
+
+    if request.method == 'POST':
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+
+        if new_password:
+            # Проверяем текущий пароль
+            if db_api.verify_password(user['password'], current_password):
+                # Обновляем пароль (автоматически хешируется)
+                db_api.update_user_password(user_id, new_password)
+                flash('Пароль успешно изменён', 'success')
+            else:
+                flash('Текущий пароль неверен', 'error')
+
+        # Обновляем данные пользователя
+        user = db_api.get_user_by_id(user_id)
+
+    bookings = db_api.get_user_bookings(user_id)
+    return render_template('profile.html', user=user, bookings=bookings)
 # --- Каталог и бронирование ---
 @main_bp.route('/catalog')
 def catalog():

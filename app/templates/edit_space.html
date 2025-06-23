@@ -1,25 +1,69 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>{{ 'Редактирование пространства' if space else 'Добавление нового пространства' }}</h2>
-<form method="post">
-    <label for="title">Название:</label><br>
-    <input type="text" id="title" name="title" required value="{{ space.title if space else '' }}"><br><br>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
 
-    <label for="location">Местоположение:</label><br>
-    <input type="text" id="location" name="location" required value="{{ space.location if space else '' }}"><br><br>
+<a href="{{ url_for('main.manage_spaces') }}" class="back-to-site">← Назад</a>
 
-    <label for="capacity">Вместимость:</label><br>
-    <input type="number" id="capacity" name="capacity" min="1" required value="{{ space.capacity if space else '' }}"><br><br>
+<div class="gold-border border-top"></div>
+<div class="gold-border border-bottom"></div>
+<div class="gold-border border-left"></div>
+<div class="gold-border border-right"></div>
 
-    <label for="image">Ссылка на изображение:</label><br>
-    <input type="text" id="image" name="image" value="{{ space.image if space else '' }}"><br><br>
+<div class="admin-container">
+    <h1 class="admin-header">
+        {% if space %}
+            РЕДАКТИРОВАНИЕ ПРОСТРАНСТВА
+        {% else %}
+            СОЗДАНИЕ НОВОГО ПРОСТРАНСТВА
+        {% endif %}
+    </h1>
 
-    <label for="type">Тип пространства:</label><br>
-    <input type="text" id="type" name="type" required value="{{ space.type if space else '' }}"><br><br>
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
 
-    <label for="description">Описание:</label><br>
-    <textarea id="description" name="description" rows="4">{{ space.description if space else '' }}</textarea><br><br>
+    <form method="post" class="admin-form-container">
+        <div class="form-row">
+            <label for="title">Название:</label>
+            <input type="text" id="title" name="title" required value="{{ space.title if space else '' }}">
+        </div>
 
-    <button type="submit">{{ 'Сохранить' }}</button>
-</form>
+        <div class="form-row">
+            <label for="location">Местоположение:</label>
+            <input type="text" id="location" name="location" required value="{{ space.location if space else '' }}">
+        </div>
+
+        <div class="form-row">
+            <label for="capacity">Вместимость:</label>
+            <input type="number" id="capacity" name="capacity" min="1" required value="{{ space.capacity if space else '' }}">
+        </div>
+
+        <div class="form-row">
+            <label for="image">Изображение на сервере:</label>
+            <input type="text" id="image" name="image" value="{{ space.image if space else '' }}">
+        </div>
+
+        <div class="form-row">
+            <label for="type">Тип пространства:</label>
+            <input type="text" id="type" name="type" required value="{{ space.type if space else '' }}">
+        </div>
+
+        <div class="form-row">
+            <label for="description">Описание:</label>
+            <textarea id="description" name="description" rows="4">{{ space.description if space else '' }}</textarea>
+        </div>
+
+        <button type="submit" class="admin-btn">
+            {% if space %}
+                СОХРАНИТЬ ИЗМЕНЕНИЯ
+            {% else %}
+                СОЗДАТЬ ПРОСТРАНСТВО
+            {% endif %}
+        </button>
+    </form>
+
+    <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
+
+    <div class="admin-footer">
+        Золотая административная панель &copy; {{ current_year }} | Пространства и возможности
+    </div>
+</div>
 {% endblock %}

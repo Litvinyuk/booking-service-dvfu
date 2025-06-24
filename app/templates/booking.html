@@ -26,29 +26,61 @@
             </div>
         </div>
 
-        <!-- Занятые слоты -->
-        <div class="booking-form">
-            <h2 class="form-title">Занятые слоты</h2>
-            {% if bookings %}
-                <ul>
-                    {% for booking in bookings %}
-                        <li>{{ booking[0] }} — {{ booking[1] }}–{{ booking[2] }}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>На ближайшие дни свободно.</p>
-            {% endif %}
+        <!-- Календарь бронирования -->
+        <div class="booking-calendar">
+            <h2 class="calendar-title">Календарь бронирования</h2>
+            
+            <!-- Фильтры -->
+            <div class="calendar-controls">
+                <form method="GET" class="date-selector">
+                    <label for="date">Выберите дату:</label>
+                    <input type="date" id="date" name="date" value="{{ selected_date }}" required>
+                    <button type="submit" class="btn-show">Показать</button>
+                </form>
+                
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <span class="legend-color free"></span>
+                        <span>Свободно</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color booked"></span>
+                        <span>Занято</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color past"></span>
+                        <span>Недоступно</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Сетка временных слотов -->
+            <div class="time-grid">
+                {% for slot in time_slots %}
+                <div class="time-slot time-slot-{{ slot.status }}" 
+                     data-start="{{ slot.start }}" 
+                     data-end="{{ slot.end }}"
+                     onclick="handleSlotClick(this)">
+                    <span class="slot-time">{{ slot.start }} - {{ slot.end }}</span>
+                    <span class="slot-label">
+                        {% if slot.status == 'booked' %}Занято
+                        {% elif slot.status == 'past' %}Недоступно
+                        {% else %}Свободно
+                        {% endif %}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
         </div>
 
-        <!-- Форма -->
-        <div class="booking-form">
+        <!-- Форма бронирования -->
+        <div class="booking-form" id="booking-form">
             <h2 class="form-title">Забронировать пространство</h2>
-            <form method="POST">
+            <form method="POST" id="booking-form-data">
+                <input type="hidden" name="date" value="{{ selected_date }}">
+                <input type="hidden" name="space_id" value="{{ space.id }}">
+                
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label for="date">Дата</label>
-                        <input type="date" id="date" name="date" required>
-                    </div>
                     <div class="form-group">
                         <label for="start-time">Время начала</label>
                         <input type="time" id="start-time" name="start_time" required>
@@ -58,9 +90,29 @@
                         <input type="time" id="end-time" name="end_time" required>
                     </div>
                 </div>
-                <button type="submit" class="submit-btn">Забронировать</button>
+                
+                <button type="submit" class="submit-btn">Подтвердить бронь</button>
             </form>
         </div>
     </main>
 
+    <script>
+        function handleSlotClick(element) {
+            if (element.classList.contains('time-slot-free')) {
+                // Заполняем форму значениями из слота
+                document.getElementById('start-time').value = element.dataset.start;
+                document.getElementById('end-time').value = element.dataset.end;
+                
+                // Прокручиваем к форме
+                document.getElementById('booking-form').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Автоматическое обновление при изменении даты
+        document.getElementById('date').addEventListener('change', function() {
+            this.form.submit();
+        });
+    </script>
 {% endblock %}

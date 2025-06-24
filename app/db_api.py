@@ -318,3 +318,16 @@ def get_upcoming_bookings(space_id):
             'end_time': b[5]
         } for b in res
     ]
+
+def get_bookings_by_date(space_id, booking_date):
+    """Получает бронирования для конкретной даты и пространства"""
+    conn = get_connection()
+    cur = conn.cursor()
+    res = cur.execute('''
+        SELECT start_time, end_time 
+        FROM bookings 
+        WHERE space_id = ? AND booking_date = ?
+    ''', (space_id, booking_date)).fetchall()
+    conn.close()
+    return [{'start_time': r[0], 'end_time': r[1]} for r in res]
+

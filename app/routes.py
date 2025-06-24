@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from app import db_api
 from functools import wraps
+from datetime import datetime, time, timedelta
 
 main_bp = Blueprint('main', __name__)
 
@@ -215,7 +216,7 @@ def add_booking():
                 spaces = db_api.get_all_spaces()
                 return render_template('edit_booking.html', booking=None, users=users, spaces=spaces)
 
-        db_api.create_booking(space_id, user_id, booking_date, start_time, end_time)
+        db_api.create_booking(user_id, space_id, booking_date, start_time, end_time)
         flash('Бронирование добавлено', 'success')
         return redirect(url_for('main.manage_bookings'))
 
@@ -300,13 +301,12 @@ def profile():
 
     bookings = db_api.get_user_bookings(user_id)
     return render_template('profile.html', user=user, bookings=bookings)
+
 # --- Каталог и бронирование ---
 @main_bp.route('/catalog')
 def catalog():
     spaces = db_api.get_all_spaces()
     return render_template('catalog.html', spaces=spaces)
-
-
 
 @main_bp.route('/booking/<int:space_id>', methods=['GET', 'POST'])
 def booking(space_id):
@@ -315,24 +315,72 @@ def booking(space_id):
         flash('Пожалуйста, авторизуйтесь для бронирования', 'error')
         return redirect(url_for('main.login'))
 
+    # Обработка выбора даты
+    selected_date = request.args.get('date', datetime.today().strftime('%Y-%m-%d'))
+    
+    # Получение пространства
+    space = db_api.get_space_by_id(space_id)
+    if not space:
+        flash('Пространство не найдено', 'error')
+        return redirect(url_for('main.catalog'))
+    
+    # Получение бронирований для выбранной даты
+    bookings = db_api.get_bookings_by_date(space_id, selected_date)
+    booked_slots = [f"{b['start_time']}-{b['end_time']}" for b in bookings]
+    
+    # Генерация временных слотов (8:00 - 22:00 с шагом 30 минут)
+    time_slots = []
+    start_time_val = time(8, 0)
+    end_time_val = time(22, 0)
+    slot_duration = timedelta(minutes=30)
+    
+    current_datetime = datetime.combine(datetime.today(), start_time_val)
+    end_datetime = datetime.combine(datetime.today(), end_time_val)
+    
+    while current_datetime < end_datetime:
+        slot_start = current_datetime.time().strftime('%H:%M')
+        slot_end = (current_datetime + slot_duration).time().strftime('%H:%M')
+        
+        # Определение статуса слота
+        slot_key = f"{slot_start}-{slot_end}"
+        selected_date_obj = datetime.strptime(selected_date, '%Y-%m-%d').date()
+        today = datetime.today().date()
+        
+        if selected_date_obj < today:
+            status = 'past'
+        elif selected_date_obj == today:
+            if datetime.now().time() > current_datetime.time():
+                status = 'past'
+            else:
+                status = 'booked' if slot_key in booked_slots else 'free'
+        else:
+            status = 'booked' if slot_key in booked_slots else 'free'
+        
+        time_slots.append({
+            'start': slot_start,
+            'end': slot_end,
+            'status': status
+        })
+        
+        current_datetime += slot_duration
+
+    # Обработка формы бронирования
     if request.method == 'POST':
         date = request.form['date']
         start_time = request.form['start_time']
         end_time = request.form['end_time']
-
-        # Проверка конфликтов и создание бронирования
+        
+        # Проверка конфликтов
         if db_api.has_booking_conflict(space_id, date, start_time, end_time):
             flash('В это время уже есть бронирование', 'error')
         else:
             db_api.create_booking(user_id, space_id, date, start_time, end_time)
             flash('Бронирование успешно создано', 'success')
-            return redirect(url_for('main.booking', space_id=space_id))
+            # Остаемся на той же дате после бронирования
+            return redirect(url_for('main.booking', space_id=space_id, date=date))
+    
+    return render_template('booking.html', 
+                          space=space,
+                          selected_date=selected_date,
+                          time_slots=time_slots)
 
-    # Остальной код для GET-запроса
-    space = db_api.get_space_by_id(space_id)
-    bookings = db_api.get_upcoming_bookings(space_id)
-
-    # Форматирование занятых слотов для шаблона
-    booked_slots = [(b['booking_date'], b['start_time'], b['end_time']) for b in bookings]
-
-    return render_template('booking.html', space=space, bookings=booked_slots)

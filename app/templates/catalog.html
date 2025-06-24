@@ -9,38 +9,6 @@
             <p>Выберите подходящее пространство для вашего мероприятия</p>
         </div>
 
-        <div class="filters">
-            <div class="filter-group">
-                <label for="type-filter">Тип:</label>
-                <select id="type-filter">
-                    <option value="all">Все типы</option>
-                    <option value="conference">Конференц-залы</option>
-                    <option value="lecture">Лекционные аудитории</option>
-                    <option value="meeting">Переговорные</option>
-                    <option value="event">Пространства для мероприятий</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="capacity-filter">Вместимость:</label>
-                <select id="capacity-filter">
-                    <option value="all">Любая</option>
-                    <option value="5">До 5 человек</option>
-                    <option value="10">До 10 человек</option>
-                    <option value="20">До 20 человек</option>
-                    <option value="50">До 50 человек</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="building-filter">Корпус:</label>
-                <select id="building-filter">
-                    <option value="all">Все корпуса</option>
-                    <option value="main">Главный корпус</option>
-                    <option value="science">Научный корпус</option>
-                    <option value="library">Библиотека</option>
-                    <option value="sport">Спортивный комплекс</option>
-                </select>
-            </div>
-        </div>
 
        <div class="spaces-grid">
             {% for space in spaces %}

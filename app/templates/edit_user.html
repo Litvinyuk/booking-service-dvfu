@@ -1,4 +1,3 @@
-{% extends "base.html" %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
 
@@ -15,25 +14,25 @@
     <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
 
     <form method="post" class="admin-form">
-        <div class="form-group">
+        <div class="form-row">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required
                    value="{{ user.email if user else '' }}">
         </div>
 
-        <div class="form-group">
+        <div class="form-row">
             <label for="first_name">Имя:</label>
             <input type="text" id="first_name" name="first_name" required
                    value="{{ user.first_name if user else '' }}">
         </div>
 
-        <div class="form-group">
+        <div class="form-row">
             <label for="last_name">Фамилия:</label>
             <input type="text" id="last_name" name="last_name" required
                    value="{{ user.last_name if user else '' }}">
         </div>
 
-        <div class="form-group">
+        <div class="form-row">
             <label for="password">{{ 'Новый пароль' if user else 'Пароль' }}:</label>
             <input type="password" id="password" name="password" {% if not user %}required{% endif %}>
             {% if user %}

@@ -431,6 +431,8 @@ header {
 .form-row input[type="number"],
 .form-row input[type="date"],
 .form-row input[type="time"],
+.form-row input[type="email"],
+.form-row input[type="password"],
 .form-row select,
 .form-row textarea {
     width: 100%;
@@ -517,4 +519,3 @@ header {
         margin: 20px 0;
     }
 }
-

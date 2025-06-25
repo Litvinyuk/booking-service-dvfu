@@ -106,7 +106,6 @@ def edit_user(user_id):
     return render_template('edit_user.html', user=user)
 
 
-# --- Пространства ---
 @main_bp.route('/admin/spaces')
 @admin_required
 def manage_spaces():

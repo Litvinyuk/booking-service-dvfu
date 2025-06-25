@@ -1,7 +1,6 @@
 from app.models.database import get_connection
 from datetime import datetime
 import hashlib
-import binascii
 
 def hash_password(password):
     salt = "fixed_salt"

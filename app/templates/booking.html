@@ -29,7 +29,7 @@
         <!-- Календарь бронирования -->
         <div class="booking-calendar">
             <h2 class="calendar-title">Календарь бронирования</h2>
-            
+
             <!-- Фильтры -->
             <div class="calendar-controls">
                 <form method="GET" class="date-selector">
@@ -37,7 +37,7 @@
                     <input type="date" id="date" name="date" value="{{ selected_date }}" required>
                     <button type="submit" class="btn-show">Показать</button>
                 </form>
-                
+
                 <div class="calendar-legend">
                     <div class="legend-item">
                         <span class="legend-color free"></span>
@@ -53,12 +53,12 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Сетка временных слотов -->
             <div class="time-grid">
                 {% for slot in time_slots %}
-                <div class="time-slot time-slot-{{ slot.status }}" 
-                     data-start="{{ slot.start }}" 
+                <div class="time-slot time-slot-{{ slot.status }}"
+                     data-start="{{ slot.start }}"
                      data-end="{{ slot.end }}"
                      onclick="handleSlotClick(this)">
                     <span class="slot-time">{{ slot.start }} - {{ slot.end }}</span>
@@ -79,7 +79,7 @@
             <form method="POST" id="booking-form-data">
                 <input type="hidden" name="date" value="{{ selected_date }}">
                 <input type="hidden" name="space_id" value="{{ space.id }}">
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="start-time">Время начала</label>
@@ -90,7 +90,7 @@
                         <input type="time" id="end-time" name="end_time" required>
                     </div>
                 </div>
-                
+
                 <button type="submit" class="submit-btn">Подтвердить бронь</button>
             </form>
         </div>
@@ -102,14 +102,14 @@
                 // Заполняем форму значениями из слота
                 document.getElementById('start-time').value = element.dataset.start;
                 document.getElementById('end-time').value = element.dataset.end;
-                
+
                 // Прокручиваем к форме
                 document.getElementById('booking-form').scrollIntoView({
                     behavior: 'smooth'
                 });
             }
         }
-        
+
         // Автоматическое обновление при изменении даты
         document.getElementById('date').addEventListener('change', function() {
             this.form.submit();

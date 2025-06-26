@@ -17,6 +17,18 @@
         <div style="width: 35px;"></div> <!-- Выравнивающий элемент -->
     </header>
 
+    <div class="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </div>
+
     <main class="page-content">
         <div class="auth-form">
             <h2>Регистрация</h2>

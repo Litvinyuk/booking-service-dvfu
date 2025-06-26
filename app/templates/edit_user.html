@@ -1,7 +1,27 @@
-{% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'Редактирование пользователя' if user else 'Добавление пользователя' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+</head>
+<body>
 
 <a href="{{ url_for('main.manage_users') }}" class="back-to-site">← Назад</a>
+
+{# Уведомления #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="admin-notification {{ category }}">
+          {{ message }}
+          <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
 <div class="gold-border border-top"></div>
 <div class="gold-border border-bottom"></div>
@@ -9,34 +29,33 @@
 <div class="gold-border border-right"></div>
 
 <div class="admin-container">
-    <h1 class="admin-header">{{'РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ' if user else 'ДОБАВЛЕНИЕ НОВОГО ПОЛЬЗОВАТЕЛЯ'}}</h1>
+    <h1 class="admin-header">
+        {{ 'РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ' if user else 'ДОБАВЛЕНИЕ НОВОГО ПОЛЬЗОВАТЕЛЯ' }}
+    </h1>
 
     <div class="admin-decoration">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>
 
     <form method="post" class="admin-form">
         <div class="form-row">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required
-                   value="{{ user.email if user else '' }}">
+            <input type="email" id="email" name="email" required value="{{ user.email if user else '' }}">
         </div>
 
         <div class="form-row">
             <label for="first_name">Имя:</label>
-            <input type="text" id="first_name" name="first_name" required
-                   value="{{ user.first_name if user else '' }}">
+            <input type="text" id="first_name" name="first_name" required value="{{ user.first_name if user else '' }}">
         </div>
 
         <div class="form-row">
             <label for="last_name">Фамилия:</label>
-            <input type="text" id="last_name" name="last_name" required
-                   value="{{ user.last_name if user else '' }}">
+            <input type="text" id="last_name" name="last_name" required value="{{ user.last_name if user else '' }}">
         </div>
 
         <div class="form-row">
             <label for="password">{{ 'Новый пароль' if user else 'Пароль' }}:</label>
             <input type="password" id="password" name="password" {% if not user %}required{% endif %}>
             {% if user %}
-                <div class="form-hint">Оставьте поле пустым, если не хотите менять пароль</div>
+            <div class="form-hint">Оставьте поле пустым, если не хотите менять пароль</div>
             {% endif %}
         </div>
 
@@ -49,4 +68,6 @@
         Золотая административная панель &copy; {{ current_year }} | Управление пользователями
     </div>
 </div>
-{% endblock %}
+
+</body>
+</html>

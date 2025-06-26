@@ -1,7 +1,27 @@
-{% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if space %}Редактирование пространства{% else %}Создание пространства{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+</head>
+<body>
 
 <a href="{{ url_for('main.manage_spaces') }}" class="back-to-site">← Назад</a>
+
+{# Уведомления flash #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="admin-notification {{ category }}">
+          {{ message }}
+          <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
 <div class="gold-border border-top"></div>
 <div class="gold-border border-bottom"></div>
@@ -9,6 +29,7 @@
 <div class="gold-border border-right"></div>
 
 <div class="admin-container">
+
     <h1 class="admin-header">
         {% if space %}
             РЕДАКТИРОВАНИЕ ПРОСТРАНСТВА
@@ -65,4 +86,6 @@
         Золотая административная панель &copy; {{ current_year }} | Пространства и возможности
     </div>
 </div>
-{% endblock %}
+
+</body>
+</html>

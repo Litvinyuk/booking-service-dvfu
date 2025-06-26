@@ -1,7 +1,15 @@
 from app.models.database import get_connection
-from datetime import datetime
+from datetime import datetime, timedelta
 import hashlib
 
+
+def can_cancel_booking(booking_id):
+    booking = get_booking_by_id(booking_id)
+    if not booking:
+        return False
+    booking_datetime_str = booking['booking_date'] + ' ' + booking['start_time']
+    booking_datetime = datetime.strptime(booking_datetime_str, '%Y-%m-%d %H:%M')
+    return datetime.now() + timedelta(hours=24) <= booking_datetime
 def hash_password(password):
     salt = "fixed_salt"
     return hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000).hex()
@@ -55,13 +63,15 @@ def create_user(email, first_name, last_name, password, is_admin=False):
 
 def update_user_info(user_id, email, first_name, last_name, is_admin):
     conn = get_connection()
-    cur = conn.cursor()
-    cur.execute(
-        "UPDATE users SET email = ?, first_name = ?, last_name = ?, is_admin = ? WHERE id = ?",
-        (email, first_name, last_name, int(is_admin), user_id)
-    )
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE users
+        SET email = ?, first_name = ?, last_name = ?, is_admin = ?
+        WHERE id = ?
+    """, (email, first_name, last_name, is_admin, user_id))
     conn.commit()
     conn.close()
+
 
 def update_user_password(user_id, new_password):
     conn = get_connection()
@@ -175,10 +185,6 @@ def create_booking(user_id, space_id, booking_date, start_time, end_time):
     conn.close()
 
 def has_booking_conflict(space_id, booking_date, start_time, end_time, exclude_booking_id=None):
-    """
-    Проверяет наличие конфликтующих бронирований для пространства на заданное время.
-    Если exclude_booking_id указан, исключает его из проверки (для редактирования).
-    """
     conn = get_connection()
     cur = conn.cursor()
 
@@ -186,11 +192,8 @@ def has_booking_conflict(space_id, booking_date, start_time, end_time, exclude_b
     SELECT COUNT(*)
     FROM bookings
     WHERE space_id = ?
-      AND booking_date = ?
-      AND NOT (
-          end_time <= ? OR
-          start_time >= ?
-      )
+    AND booking_date = ?
+    AND NOT (end_time <= ? OR start_time >= ?)
     '''
     params = [space_id, booking_date, start_time, end_time]
 
@@ -330,3 +333,83 @@ def get_bookings_by_date(space_id, booking_date):
     conn.close()
     return [{'start_time': r[0], 'end_time': r[1]} for r in res]
 
+def update_user_password(user_id, new_password):
+    # Хешируем пароль перед сохранением
+    hashed_pw = hash_password(new_password)
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET password = ? WHERE id = ?",
+        (hashed_pw, user_id)
+    )
+    conn.commit()
+    conn.close()
+
+
+from datetime import datetime, timedelta, time
+
+
+def get_time_slots(space_id, selected_date, all_bookings):
+    """
+    Формирует слоты времени с учетом всех бронирований
+    """
+    # Преобразуем дату
+    selected_date_obj = datetime.strptime(selected_date, "%Y-%m-%d").date()
+
+    # Фильтрация бронирований по пространству и дате
+    bookings = [
+        b for b in all_bookings
+        if b['space_id'] == space_id and b['booking_date'] == selected_date
+    ]
+
+    # Преобразуем времена начала/окончания бронирований в объекты time
+    booked_intervals = [
+        (
+            datetime.strptime(b["start_time"], "%H:%M").time(),
+            datetime.strptime(b["end_time"], "%H:%M").time()
+        )
+        for b in bookings
+    ]
+
+    # Строим список всех слотов по 1 часу (с 08:00 до 20:00)
+    slots = []
+    current = time(8, 0)
+    end = time(20, 0)
+
+    while current < end:
+        next_time = (datetime.combine(datetime.today(), current) + timedelta(hours=1)).time()
+        status = "free"
+
+        now = datetime.now()
+        slot_start_datetime = datetime.combine(selected_date_obj, current)
+
+        if slot_start_datetime < now:
+            status = "past"
+        else:
+            for start, finish in booked_intervals:
+                if not (next_time <= start or current >= finish):
+                    status = "booked"
+                    break
+
+        slots.append({
+            "start": current.strftime("%H:%M"),
+            "end": next_time.strftime("%H:%M"),
+            "status": status
+        })
+        current = next_time
+
+    return slots
+
+def count_user_active_bookings(user_id, date_from):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        SELECT COUNT(*) FROM bookings
+        WHERE user_id = ? AND booking_date >= ?
+        """,
+        (user_id, date_from)
+    )
+    result = cursor.fetchone()
+    conn.close()
+    return result[0] if result else 0

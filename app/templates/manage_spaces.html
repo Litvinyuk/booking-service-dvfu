@@ -3,6 +3,20 @@
 
 <a href="{{ url_for('main.admin_index') }}" class="back-to-site">← Назад</a>
 
+{# Кастомные уведомления flash #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="admin-notification {{ category }}">
+          {{ message }}
+          <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
 <div class="gold-border border-top"></div>
 <div class="gold-border border-bottom"></div>
 <div class="gold-border border-left"></div>
@@ -38,9 +52,9 @@
                 <td>{{ space.type }}</td>
                 <td class="admin-actions">
                     <a href="{{ url_for('main.edit_space', space_id=space.id) }}" class="admin-edit-btn">Редактировать</a>
-                    <form action="{{ url_for('main.edit_space', space_id=space.id) }}" method="post">
+                    <form action="{{ url_for('main.edit_space', space_id=space.id) }}" method="post" onsubmit="return confirm('Вы уверены?')" style="display:inline;">
                         <input type="hidden" name="delete" value="1">
-                        <button type="submit" class="admin-delete-btn" onclick="return confirm('Вы уверены?')">Удалить</button>
+                        <button type="submit" class="admin-delete-btn">Удалить</button>
                     </form>
                 </td>
             </tr>

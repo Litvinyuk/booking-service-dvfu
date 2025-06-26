@@ -519,3 +519,74 @@ header {
         margin: 20px 0;
     }
 }
+
+/* Уведомления */
+.admin-notification {
+    position: relative;
+    max-width: 600px;
+    margin: 15px auto;
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1.1em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    color: #fff;
+    animation: fadeInDown 0.5s ease forwards;
+    cursor: default;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Типы уведомлений */
+.admin-notification.success {
+    background: linear-gradient(90deg, #32CD32, #006400);
+    border: 2px solid #228B22;
+}
+
+.admin-notification.error {
+    background: linear-gradient(90deg, #FF4500, #8B0000);
+    border: 2px solid #B22222;
+}
+
+.admin-notification.warning {
+    background: linear-gradient(90deg, #FFD700, #DAA520);
+    border: 2px solid #B8860B;
+    color: #4B0082;
+}
+
+.admin-notification.info {
+    background: linear-gradient(90deg, #1E90FF, #104E8B);
+    border: 2px solid #1C86EE;
+}
+
+/* Кнопка закрытия */
+.admin-notification .close-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-weight: bold;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+    transition: color 0.3s ease;
+    user-select: none;
+}
+
+.admin-notification .close-btn:hover {
+    color: #FFD700;
+}
+
+/* Анимация появления */
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
